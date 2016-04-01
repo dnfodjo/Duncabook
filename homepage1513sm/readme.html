@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<style type="text/css">
+* {
+	font-family: Arial, Helvetica, sans-serif;
+}
+body {
+	margin: 25px;
+}
+h2 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+hr {
+	border: 1px solid #DDDDDD;
+}
+pre {
+	border: 1px solid #DDDDDD;
+	background: #EEEEEE;
+	padding: 10px;
+	font-family: courier;
+	font-size: 12px;
+	overflow-x: auto;
+}
+ul {
+	margin-top: 0px;
+}
+</style>
+<title>Homepage 1513 Installation Instructions</title>
+</head>
+
+<body>
+<h2>Homepage 1513 Installation Instructions</h2>
+<h4>Step 1: Upload to Server</h4>
+<p>Copy the contents of the &quot;upload&quot; folder to your store's top level directory, preserving the directory structure. This will not overwrite anything.</p>
+<h4>Step 2: Install Module</h4>
+<p>Log in to your store's administration and, from the menu, select &quot;Extensions-&gt;Modules&quot;, then click the &quot;Install&quot; link in the &quot;Action&quot; column for the &quot;Homepage&quot; module. You may then edit the module to enable it and set its sort order.</p>
+<p>Clicking the &quot;Edit&quot; link for the &quot;Homepage&quot; module will automagically insert the following tables into your database:&ndash;</p>
+<dl>
+	<dd>homepage</dd>
+	<dd>homepage_description</dd>
+	<dd>homepage_to_store</dd>
+</dl>
+<p>The new tables will be prefixed with your database prefix.</p>
+<h4>Step 3: Stylesheet</h4>
+<p>If you have Qphoria's VirtualQMod system installed, the following is not necessary as the included vQmod file will do it for you.</p>
+<p>Add the following to the head section of &quot;catalog/view/theme/default/template/common/header.tpl&quot;:&ndash;</p>
+<pre>
+&lt;link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/homepage.css" /&gt;
+</pre>
+<hr />
+<p>That finishes the installation.</p>
+<hr />
+<h3>Adding Entries to Your Home Page</h3>
+<p>Login to your OpenCart Admin. From the menu, select &quot;Extensions&ndash;&gt;Modules&quot;, then click the &quot;Edit&quot; link for the &quot;Homepage&quot; module.</p>
+<p>Clicking the &quot;Homepage Entries&quot; button will take you to the list page where you may add/edit your homepage entries. If you are using Qphoria's VirtualQMod system, you will also find an entry under the &quot;Catalog&quot; menu, titled &quot;Homepage Entries&quot;.</p>
+<p>By clicking the &quot;Data&quot; tab you will be able to set the status of the entry to &quot;Enabled&quot; or &quot;Disabled&quot; (disabled by default). You can also set the sort order on this page.</p>
+<p>When done, click &quot;Save&quot;. This entry will now appear on your home page (if enabled).</p>
+<p>Each homepage item will appear on your home page with the title as the heading and the description as the subject matter below the heading.</p>
+</body>
+</html>

@@ -1,0 +1,535 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Shipping Edition - Seller Areas</id>
+	<!-- ************************************************************************************************* -->
+	<!-- * Alter Dashboard template, add shipping settings link, and shipping methods to the orders list * -->
+	<!-- ************************************************************************************************* -->
+	
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/account-dashboard.tpl">
+		<!-- Add shipping settings link -->
+		<operation>
+			<search position="before"><![CDATA[
+				<a href="<?php echo $this->url->link('seller/account-order', '', 'SSL'); ?>">
+			]]></search>
+			<add><![CDATA[
+				<a href="<?php echo $this->url->link('seller/account-shipping-settings', '', 'SSL'); ?>">
+					<img src="catalog/view/theme/<?php echo $this->config->get('config_template'); ?>/image/ms-woodbox.png" />
+					<span><?php echo $ms_account_dashboard_nav_shipping_settings; ?></span>
+				</a>
+			]]></add>
+		</operation>
+		
+		<!-- Add shipping methods to the orders list -->
+		<operation>
+			<search position="before"><![CDATA[
+				<td><?php echo $ms_date_created; ?></td>
+			]]></search>
+			<add><![CDATA[
+				<td><?php echo $ms_account_orders_shipping; ?></td>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+				<td><?php echo $order['date_created']; ?></td>
+			]]></search>
+			<add><![CDATA[
+				<td class="left products">
+				<?php foreach ($order['shippings'] as $shipping) { ?>
+				<p>
+					<span class="name"><?php echo $shipping['name']; ?></span>
+					<span class="total"><?php echo $this->currency->format($shipping['shipping_cost'], $this->config->get('config_currency')); ?></span> <br />
+				</p>
+				<?php } ?>
+				</td>
+			]]></add>
+		</operation>
+		
+		<!-- Change the colspan to handle new "Shippnig" field as well -->
+		<operation>
+			<search position="replace"><![CDATA[
+				<td class="center" colspan="7"><?php echo $ms_account_orders_noorders; ?></td>
+			]]></search>
+			<add><![CDATA[
+				<td class="center" colspan="8"><?php echo $ms_account_orders_noorders; ?></td>
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- ********************************************************************* -->
+	<!-- * Alter Product form template, add shipping tab, some minor changes * -->
+	<!-- ********************************************************************* -->
+	
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/account-product-form.tpl">
+		<!-- Add shipping tab -->
+		<operation>
+			<search position="after"><![CDATA[
+				<li class="active"><a href="#tab-general" data-toggle="tab"><?php echo $ms_account_product_tab_general; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('msconf_enable_shipping')) { ?>
+				    <li id="shipping_tab"><a href="#tab-shipping" data-toggle="tab"><?php echo $ms_account_product_tab_shipping; ?></a></li>
+				<?php } ?>
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+				<!-- specials tab -->
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('msconf_enable_shipping')) { ?>
+					<div id="tab-shipping" class="tab-pane tab-content"></div>
+				<?php } ?>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+				var msGlobals = {
+			]]></search>
+			<add><![CDATA[
+				<?php if (isset($clone) && $clone == 1) {?>
+					$('#tab-shipping').load($('base').attr('href') + 'index.php?route=seller/tab-shipping/getForm&product_id=<?php echo $product['cloned_product_id']; ?>');
+				<?php } else { ?>
+					$('#tab-shipping').load($('base').attr('href') + 'index.php?route=seller/tab-shipping/getForm&product_id=<?php echo $product['product_id']; ?>');
+				<?php } ?>
+			]]></add>
+		</operation>
+		
+		<!-- Make downloads required -->
+        <!--
+		<operation>
+			<search position="replace"><![CDATA[
+				<td><?php if ($msconf_downloads_limits[0] > 0) { ?><span class="required">*</span><?php } ?> <?php echo $ms_account_product_download; ?></td>
+			]]></search>
+			<add><![CDATA[
+				<td><?php if ( ($msconf_enable_shipping == 2 && $product['shipping'] != 1) && ($msconf_downloads_limits[0] > 0) ) { ?><span class="required" name="downloads_required" id="downloads_required">*</span><?php } ?> <?php echo $ms_account_product_download; ?></td>
+			]]></add>
+		</operation>
+		-->
+
+        <!-- Add global variables to check download limits -->
+        <!--
+		<operation>
+			<search position="after"><![CDATA[
+				formNotice: '<?php echo htmlspecialchars($ms_error_form_notice, ENT_QUOTES, "UTF-8"); ?>',
+			]]></search>
+			<add><![CDATA[
+				downloadsLimitApplication: '<?php echo $msship_download_limit_applies; ?>',
+				downloadsLimit: '<?php echo $msconf_downloads_limits[0]; ?>',
+			]]></add>
+		</operation>
+        -->
+
+		<!-- Make quantity required for physical products -->
+        <!--
+		<operation>
+			<search position="replace" index="1"><![CDATA[
+				<td><?php echo $ms_account_product_quantity; ?></td>
+			]]></search>
+			<add><![CDATA[
+				<td> <span class="required">*</span> <?php echo $ms_account_product_quantity; ?> </td>
+			]]></add>
+		</operation>
+		-->
+	</file>
+	
+	<!-- ************************************************************************ -->
+	<!-- * Change the product form tab (Shipping selection) in product template * -->
+	<!-- ************************************************************************ -->
+
+    <!--
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/account-product-form.tpl">
+		<operation>
+			<search position="replace" offset="13"><![CDATA[
+				<?php if ($msconf_enable_shipping == 2) { ?>
+			]]></search>
+			<add><![CDATA[
+				
+			]]></add>
+		</operation>
+
+
+		<operation>
+			<search position="after"><![CDATA[
+				<tr><td colspan="2"><h3><?php echo $ms_account_product_price_attributes; ?></h3></td></tr>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($msconf_enable_shipping == 2) { ?>
+				<tr>
+					<td> <span class="required">*</span> <?php echo $ms_account_product_shipping_way; ?></td>
+					<td>
+						<input type="radio" name="product_enable_shipping" value="1" <?php if(($product['shipping'] == 1) || (isset($product_shipping) && $product_shipping == 1)) { ?> checked="checked" <?php } ?>/>
+						<?php echo $ms_shipping_way_shippable; ?>
+						<input type="radio" name="product_enable_shipping" value="0" <?php if(($product['shipping'] == 0) && (isset($product_shipping) && $product_shipping == NULL)) { ?> checked="checked" <?php } ?>/>
+						<?php echo $ms_shipping_way_digital; ?>
+						<p class="ms-note"><?php echo $ms_account_product_enable_shipping_note; ?></p>
+						<p class="ms-note" name="shipping_reminder"><?php echo $ms_account_product_shipping_way_reminder; ?></p>
+						<p class="error" id="error_product_enable_shipping"></p>
+					</td>
+				</tr>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	-->
+
+	<!-- ************************************************** -->
+	<!-- * Alter order template, add shipping information * -->
+	<!-- ************************************************** -->
+	
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/account-order.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<?php echo $ms_status; ?></td>
+			]]></search>
+			<add><![CDATA[
+				<td><?php echo $ms_account_orders_shipping; ?></td>
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+				<tr class="filter">
+			]]></search>
+			<add><![CDATA[
+				<td></td>
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+				{ "mData": "date_created" },
+			]]></search>
+			<add><![CDATA[
+				{ "mData": "shipping_data", "bSortable": false, "sClass": "left products" },
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- *************************** -->
+	<!-- ******* CONTROLLERS ******* -->
+	<!-- *************************** -->
+	
+	<!-- ************** -->
+	<!-- * Admin core * -->
+	<!-- ************** -->
+	
+	<!-- *********** -->
+	<!-- * Account * -->
+	<!-- *********** -->
+	
+	<file name="catalog/controller/seller/account.php">
+		<!-- Add language and style files -->
+		<operation>
+			<search position="after"><![CDATA[
+				parent::__construct($registry);
+			]]></search>
+			<add><![CDATA[
+				$this->data = array_merge($this->data, $this->load->language('multiseller/multiseller_physical'));
+				$this->MsLoader->MsHelper->addStyle('multiseller_physical');
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- ************* -->
+	<!-- * Dashboard * -->
+	<!-- ************* -->
+	
+	<file name="catalog/controller/seller/account-dashboard.php">
+		<operation>
+			<search position="after"><![CDATA[
+				foreach ($orders as $order) {
+			]]></search>
+			<add><![CDATA[
+				$total = 0.0;
+				$products = $this->MsLoader->MsOrderData->getOrderProducts(array('order_id' => $order['order_id'], 'seller_id' => $seller_id));
+				$sellerShipping = $this->MsLoader->MsShipping->getOrderSellerShipping($order['order_id'], $seller_id, 0);
+			
+				$shippings = array();
+				$atLeastOneShippable = false;
+				if (empty($sellerShipping)) {
+					foreach ($products as $key => $product) {
+					    $products[$key]['options']	=  $this->model_account_order->getOrderOptions($order['order_id'], $product['order_product_id']);
+						// Shippable
+						if ($this->MsLoader->MsShipping->getOrderProductShippable($order['order_id'], $product['product_id'])) {
+							$atLeastOneShippable = true;
+							$productShipping = $this->MsLoader->MsShipping->getOrderProductShipping($order['order_id'], $product['product_id']);
+							$shippings[] = array(
+								'shipping_cost' => $productShipping['shipping_cost'],
+								'name' => $productShipping['shipping_method_name']
+								//'name' => $this->MsLoader->MsShippingMethod->getShippingMethodDescriptions($productShipping['product_shipping_method_id'])[$language_id]['name'],
+							);
+							$total += $productShipping['shipping_cost'];
+						// Not shippable
+						} else {
+							$shippings[] = array(
+								'shipping_cost' => "0",
+								'name' => "--"
+							);
+						}
+					}
+				}
+				else {
+					$shippings[] = array(
+						'shipping_cost' => $sellerShipping['shipping_cost'],
+						'name' => $sellerShipping['shipping_method_name']
+						//'name' => $this->MsLoader->MsShippingMethod->getShippingMethodDescriptions($sellerShipping['seller_shipping_method_id'])[$language_id]['name'],
+					);
+					$total += $sellerShipping['shipping_cost'];
+				}
+			
+				$shipped = 0;
+				$orderShipping = $this->MsLoader->MsShipping->getOrderShippingTracking($order['order_id'], $seller_id);
+				if ($orderShipping) {
+					$shipped = $orderShipping['shipped']; // Is shipped already
+				}
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+				'products' => $products,
+			]]></search>
+			<add><![CDATA[
+    			'products' => $products,
+				'shippings' => $shippings,
+				'shippable' => $atLeastOneShippable,
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+				'total' => $this->currency->format($this->MsLoader->MsOrderData->getOrderTotal($order['order_id'], array('seller_id' => $seller_id)), $this->config->get('config_currency'))
+			]]></search>
+			<add><![CDATA[
+    			'total' => $this->currency->format($total + $this->MsLoader->MsOrderData->getOrderTotal($order['order_id'], array('seller_id' => $seller_id)), $this->config->get('config_currency'))
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- ******************** -->
+	<!-- * Account->Order * -->
+	<!-- ******************** -->
+	
+	<file name="catalog/controller/seller/account-order.php">
+		<operation>
+			<search position="after"><![CDATA[
+				public function index() {
+			]]></search>
+			<add><![CDATA[
+		        $this->data = array_merge($this->data, $this->load->language('multiseller/multiseller_physical'));
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+				$order_products = $this->MsLoader->MsOrderData->getOrderProducts(array('order_id' => $order['order_id'], 'seller_id' => $seller_id));
+			]]></search>
+			<add><![CDATA[
+				// SE
+		        $total = 0.0;
+		        $sellerShipping = $this->MsLoader->MsShipping->getOrderSellerShipping($order['order_id'], $seller_id, 0);
+
+		        $shippings = array();
+		        $atLeastOneShippable = false;
+		        if (empty($sellerShipping)) {
+		            foreach ($order_products as $product) {
+		                // Shippable
+		                if ($this->MsLoader->MsShipping->getOrderProductShippable($order['order_id'], $product['product_id'])) {
+		                    $atLeastOneShippable = true;
+		                    $productShipping = $this->MsLoader->MsShipping->getOrderProductShipping($order['order_id'], $product['product_id'], 0);
+		                    $shippings[] = array(
+		                        'shipping_cost' => $productShipping['shipping_cost'],
+		                        'name' => $productShipping['shipping_method_name']
+		                        //'name' => $this->MsLoader->MsShippingMethod->getShippingMethodDescriptions($productShipping['product_shipping_method_id'])[$language_id]['name'],
+		                    );
+		                    $total += $productShipping['shipping_cost'];
+		                    // Not shippable
+		                } else {
+		                    $shippings[] = array(
+		                        'shipping_cost' => "0",
+		                        'name' => "--"
+		                    );
+		                }
+		            }
+		        }
+		        else {
+		            foreach ($order_products as $product) {
+		                // Shippable
+		                if ($this->MsLoader->MsShipping->getOrderProductShippable($order['order_id'], $product['product_id'])) {
+		                    $atLeastOneShippable = true;
+		                }
+		            }
+		            $shippings[] = array(
+		                'shipping_cost' => $sellerShipping['shipping_cost'],
+		                'name' => $sellerShipping['shipping_method_name']
+		                //'name' => $this->MsLoader->MsShippingMethod->getShippingMethodDescriptions($sellerShipping['seller_shipping_method_id'])[$language_id]['name'],
+		            );
+		            $total += $sellerShipping['shipping_cost'];
+		        }
+
+		        $shipped = 0;
+		        $orderShipping = $this->MsLoader->MsShipping->getOrderShippingTracking($order['order_id'], $seller_id);
+		        if ($orderShipping) {
+		            $shipped = $orderShipping['shipped']; // Is shipped already
+		        }
+
+		        // building shipping cell
+		        $shipping_data = "<td class='left products'>";
+		        foreach ($shippings as $shipping) {
+		            $shipping_data .= "<p>
+						<span class='name'>{$shipping['name']}</span>
+						<span class='total'>" . $this->currency->format($shipping['shipping_cost'], $this->config->get('config_currency')) . "</span>
+					</p>";
+
+		        }
+
+		        $shipping_data .= "</td>";
+		        // << SE
+			]]></add>
+		</operation>
+
+        <operation>
+			<search position="replace"><![CDATA[
+				'view_order' => '<a href="' . $this->url->link('seller/account-order/viewOrder', 'order_id=' . $order['order_id']) . '" class="ms-button ms-button-view" title="' . $this->language->get('ms_view_modify') . '"></a>'
+			]]></search>
+			<add><![CDATA[
+			    'view_order' => '<a href="' . $this->url->link('seller/account-order/viewOrder', 'order_id=' . $order['order_id']) . '" class="ms-button ms-button-view" title="' . $this->language->get('ms_view_modify') . '"></a>'
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+				'total_amount' => $this->currency->format($order['total_amount'], $this->config->get('config_currency')),
+			]]></search>
+			<add><![CDATA[
+	            // SE
+            	'total_amount' => $this->currency->format($total + $order['total_amount'], $this->config->get('config_currency')),
+            	'shipping_data' => $shipping_data,
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- ******************** -->
+	<!-- * Account->Product * -->
+	<!-- ******************** -->
+	
+	<file name="catalog/controller/seller/account-product.php">
+		<operation>
+			<search position="before" offset="1"><![CDATA[
+				if (!isset($data['product_downloads'])) {
+			]]></search>
+			<add><![CDATA[
+				if ( ($this->config->get('msship_download_limit_applies') == 0) || ($this->config->get('msship_download_limit_applies') == 1 && ( ($this->config->get('msconf_enable_shipping') == 2 && $data['product_enable_shipping'] == 0) || $this->config->get('msconf_enable_shipping') == 1) ) ) {
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before" index="2"><![CDATA[
+				$msconf_images_limits = $this->config->get('msconf_images_limits');
+			]]></search>
+			<add><![CDATA[
+				}
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+				// SEO urls generation for products
+			]]></search>
+			<add><![CDATA[
+				// >> PHYSICAL >>
+				unset($data['ms_shipping_methods'][0]);
+				
+				$shipping_type = $this->MsLoader->MsShipping->getSellerShippingType($this->customer->getId());
+				
+				if ( $data['product_enable_shipping'] == 1 ) {
+					if (isset($data['ms_shipping_methods']) && is_array($data['ms_shipping_methods'])) {
+						$ms_shipping_methods = $data['ms_shipping_methods'];
+						foreach ($ms_shipping_methods as $ms_shipping_method) {
+							if ((!$this->MsLoader->MsHelper->isUnsignedFloat($ms_shipping_method['cost'])) || ((float)$ms_shipping_method['cost'] < (float)0)) {
+								$json['errors']['shipping_methods'] = $this->language->get('ms_error_invalid_shipping_cost');
+							}
+						}
+					}
+					
+					if ($shipping_type == MsShipping::SHIPPING_TYPE_FIXED && ( !isset($data['ms_shipping_methods']) || (sizeOf($data['ms_shipping_methods']) < 1) )) {
+						$json['errors']['shipping_methods'] = $this->language->get('ms_error_no_shipping_methods_defined');
+					}
+					
+					if ( ($data['shipping_length'] != "" && isset($data['shipping_length'])) && (!$this->MsLoader->MsHelper->isUnsignedFloat($data['shipping_length']) || (float)$data['shipping_length'] < (float)0) ) {
+						$json['errors']['shipping_dimensions'] = $this->language->get('ms_error_invalid_shipping_dimensions');
+					}
+					
+					if ( ($data['shipping_width'] != "" && isset($data['shipping_width'])) && (!$this->MsLoader->MsHelper->isUnsignedFloat($data['shipping_width']) || (float)$data['shipping_width'] < (float)0) ) {
+						$json['errors']['shipping_dimensions'] = $this->language->get('ms_error_invalid_shipping_dimensions');
+					}
+					
+					if ( ($data['shipping_height'] != "" && isset($data['shipping_height'])) && (!$this->MsLoader->MsHelper->isUnsignedFloat($data['shipping_height']) || (float)$data['shipping_height'] < (float)0) ) {
+						$json['errors']['shipping_dimensions'] = $this->language->get('ms_error_invalid_shipping_dimensions');
+					}
+					
+					if ( ($data['shipping_weight'] != "" && isset($data['shipping_weight'])) && (!$this->MsLoader->MsHelper->isUnsignedFloat($data['shipping_weight']) || (float)$data['shipping_weight'] < (float)0) ) {
+						$json['errors']['shipping_weight'] = $this->language->get('ms_error_invalid_shipping_weight');
+					}
+					
+					if ( ($shipping_type == MsShipping::SHIPPING_TYPE_COMBINABLE) && ($data['shipping_weight'] == "" || !isset($data['shipping_weight']))) {
+						$json['errors']['shipping_weight'] = $this->language->get('ms_error_shipping_weight_not_entered');
+					}
+					
+					if ( ($this->config->get('msconf_enable_quantities') == 1 || $this->config->get('msconf_enable_quantities') == 2) && (!isset($data['product_quantity']) || $data['product_quantity'] == null || $data['product_quantity'] == "")) {
+						$json['errors']['product_quantity'] = $this->language->get('ms_error_quantity_not_defined');
+					}
+				}
+				else {
+					unset($data['shipping_length']);
+					unset($data['shipping_width']);
+					unset($data['shipping_height']);
+					unset($data['shipping_weight']);
+					unset($data['weight_class_id']);
+					unset($data['length_class_id']);
+					unset($data['ms_shipping_methods']);
+				}
+				// << PHYSICAL <<
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				$this->document->addScript('catalog/view/javascript/account-product-form.js');
+			]]></search>
+			<add><![CDATA[
+				$this->document->addScript('catalog/view/javascript/tab-shipping.js');
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				$this->data['msconf_downloads_limits'] = $this->config->get('msconf_downloads_limits');
+			]]></search>
+			<add><![CDATA[
+				$this->data['msship_download_limit_applies'] = $this->config->get('msship_download_limit_applies');
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				$this->document->setTitle($this->language->get('ms_account_newproduct_heading'));
+			]]></search>
+			<add><![CDATA[
+				// Select physical as default product type
+				if ($this->config->get('msconf_enable_shipping') == 2) {
+					$this->data['product_shipping'] = 1;
+				} else {
+					$this->data['product_shipping'] = NULL;
+				}
+			]]></add>
+		</operation>
+	</file>
+</modification>

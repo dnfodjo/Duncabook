@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Shipping Edition</id>
+
+	<!-- **************************************************************** -->
+	<!-- ******************** MultiMerch Core Mods ********************** -->
+	<!-- **************************************************************** -->
+	
+	<!-- ********************** -->
+	<!-- ******* MODELS ******* -->
+	<!-- ********************** -->
+
+	<!-- **************************************************** -->
+	<!-- * Alter MsBalance model, add shipping type balance * -->
+	<!-- **************************************************** -->
+	
+	<file name="system/library/msbalance.php">
+		<operation>
+			<search position="after"><![CDATA[
+				const MS_BALANCE_TYPE_RECURRING = 7;
+			]]></search>
+			<add><![CDATA[
+				// Shipping
+				const MS_BALANCE_TYPE_SHIPPING = 20;
+				const MS_BALANCE_TYPE_SHIPPING_REFUND = 21;
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+				AND balance_type = " . (int)MsBalance::MS_BALANCE_TYPE_SALE . "
+			]]></search>
+			<add><![CDATA[
+				AND (balance_type = " . (int)MsBalance::MS_BALANCE_TYPE_SALE . "
+ 				OR balance_type = " . (int)MsBalance::MS_BALANCE_TYPE_SHIPPING . ")
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- ******************************************* -->
+	<!-- * Alter MsSeller model, add shipping type * -->
+	<!-- ******************************************* -->
+	
+	<file name="system/library/msseller.php">
+		<operation>
+			<search position="after"><![CDATA[
+				avatar = '" . $this->db->escape($avatar) . "',
+			]]></search>
+			<add><![CDATA[
+				shipping_type = 0,
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+				IFNULL(SUM(mp.number_sold), 0) as 'total_sales'
+			]]></search>
+			<add><![CDATA[
+				ms.shipping_type as 'ms.shipping_type',
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- *********************************************************************************** -->
+	<!-- * Alter MsProduct model, add shipping parameters to the product and other changes * -->
+	<!-- *********************************************************************************** -->
+	
+	<file name="system/library/msproduct.php">
+		<!-- * Add shipping parameters to the product. Twice, both in createProduct and editProduct * -->
+		<operation>
+			<search position="after"><![CDATA[
+				shipping = " . (int)$data['product_enable_shipping'] . ",
+			]]></search>
+			<add><![CDATA[
+				length = '" . (isset($data['shipping_length']) && !empty($data['shipping_length']) ? (float)$this->MsLoader->MsHelper->uniformDecimalPoint($data['shipping_length']) : 'NULL') . "',
+				width = '" . (isset($data['shipping_width']) && !empty($data['shipping_width']) ? (float)$this->MsLoader->MsHelper->uniformDecimalPoint($data['shipping_width']) : 'NULL') . "',
+				height = '" . (isset($data['shipping_height']) && !empty($data['shipping_height']) ? (float)$this->MsLoader->MsHelper->uniformDecimalPoint($data['shipping_height']) : 'NULL') . "',
+				weight = '" . (isset($data['shipping_weight']) && !empty($data['shipping_weight']) ? (float)$this->MsLoader->MsHelper->uniformDecimalPoint($data['shipping_weight']) : 'NULL') . "',
+				weight_class_id = '" . (isset($data['weight_class_id']) && !empty($data['weight_class_id']) ? (int)$data['weight_class_id'] : 'NULL') . "',
+				length_class_id = '" . (isset($data['length_class_id']) && !empty($data['length_class_id']) ? (int)$data['length_class_id'] : 'NULL') . "',
+			]]></add>
+		</operation>
+
+		<!-- * Save product shipping methods. Twice, both in createProduct and editProduct * -->
+		<operation>
+			<search position="before"><![CDATA[
+				// specials
+			]]></search>
+			<add><![CDATA[
+				if (isset($data['ms_shipping_methods'])) {
+					$this->db->query("DELETE FROM " . DB_PREFIX . "ms_product_shipping_method WHERE product_id = '" . (int)$product_id . "'");
+					
+					$this->load->model('localisation/currency');
+					$currencies = $this->model_localisation_currency->getCurrencies();
+					foreach ($data['ms_shipping_methods'] as $ms_shipping_method) {
+						/*foreach ($currencies as $currency) {
+							if ($currency['currency_id'] == $ms_shipping_method['currency_id']) {
+								$ms_shipping_method['currency_code'] = $currency['code'];
+							}
+						}*/
+						$this->MsLoader->MsShipping->createProductShippingMethod($product_id, $ms_shipping_method);
+					}
+				}
+			]]></add>
+		</operation>
+
+		<!-- * Delete existing shipping methods, in editProduct * -->
+		<!--<operation>
+			<search position="before" index="1"><![CDATA[
+				if (isset($data['ms_shipping_methods'])) {
+			]]></search>
+			<add><![CDATA[
+				$this->db->query("DELETE FROM " . DB_PREFIX . "ms_product_shipping_method WHERE product_id = '" . (int)$product_id . "'");
+			]]></add>
+		</operation>-->
+	</file>
+</modification>

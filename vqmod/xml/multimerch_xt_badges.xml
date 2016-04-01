@@ -1,0 +1,405 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Badges</id>
+	<version>2.0</version>
+	<author>http://multimerch.com/</author>
+	
+	<!-- create / edit / delete seller w/ badges -->
+	<!-- view -->
+	<file name="&adminFolder;/view/template/multiseller/seller-form.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<li><a href="#tab-commission" data-toggle="tab"><?php echo $ms_commissions_fees; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+			    <li><a href="#tab-badge" data-toggle="tab"><?php echo $ms_catalog_badges_breadcrumbs; ?></a></li>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				<!--  end commission tab -->
+			]]></search>
+			<add><![CDATA[
+				<!-- begin badge tab -->
+				<div class="tab-pane" id="tab-badge">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"><?php echo $ms_catalog_badges_heading; ?></label>
+                        <div class="col-sm-10">
+                            <div class="well well-sm">
+                                <?php foreach ($badges as $badge) { ?>
+                                <div>
+                                    <input type="checkbox" name="seller[badges][]" value="<?php echo $badge['badge_id']; ?>" <?php if (isset($seller['badges']) && in_array($badge['badge_id'], $seller['badges'])) { ?>checked="checked"<?php } ?> />
+                                    <?php echo $badge['name']; ?> <img src="<?php echo $badge['image']; ?>"/>
+                                </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+				<!-- end badge tab -->
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- controller -->
+	<file name="&adminFolder;/controller/multiseller/seller.php">
+		<operation>
+			<search position="after"><![CDATA[
+				parent::__construct($registry);
+			]]></search>
+			<add><![CDATA[
+				$this->data = array_merge($this->data, $this->load->language('multiseller/multiseller'), $this->load->language('module/multimerch_badges'));
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				$this->data['seller'] = FALSE;
+			]]></search>
+			<add><![CDATA[
+				// badges
+				$badges = $this->MsLoader->MsBadge->getBadges();
+				foreach($badges as &$badge) {
+					$badge['image'] = $this->model_tool_image->resize($badge['image'], 30, 30);
+				}
+				$this->data['badges'] = $badges;
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				$this->data['seller']['commission_rates'] = $rates;
+			]]></search>
+			<add><![CDATA[
+					// badges
+					$badges = $this->MsLoader->MsBadge->getBadges();
+					foreach($badges as &$badge) {
+						$badge['image'] = $this->model_tool_image->resize($badge['image'], 30, 30);
+					}
+					$this->data['badges'] = $badges;
+
+					$seller_badges = $this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_id' => $seller['seller_id']));
+					$this->data['seller']['badges'] = array();
+					foreach($seller_badges as $b) {
+						$this->data['seller']['badges'][] = $b['badge_id'];
+					}
+					$this->data['seller']['badges'] = $this->data['seller']['badges'];
+			]]></add>
+		</operation>
+	</file>
+		
+	<!-- model -->
+	<file name="system/library/msseller.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$seller_id = $this->db->getLastId();
+			]]></search>
+			<add><![CDATA[
+				// badges
+				if (isset($data['badges'])) {
+					foreach ($data['badges'] as $k => $badge_id) {
+						$this->db->query("INSERT INTO " . DB_PREFIX . "ms_badge_seller_group (badge_id, seller_id) VALUES (" . (int)$badge_id.",".(int)$seller_id . ")");
+					}
+				}
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after" offset="1"><![CDATA[
+				public function adminEditSeller($data) {
+			]]></search>
+			<add><![CDATA[
+				// badges
+				$this->db->query("DELETE FROM " . DB_PREFIX . "ms_badge_seller_group WHERE seller_id = " . (int)$seller_id);
+				if (isset($data['badges'])) {
+					foreach ($data['badges'] as $k => $badge_id) {
+						$this->db->query("INSERT INTO " . DB_PREFIX . "ms_badge_seller_group (badge_id, seller_id) VALUES (" . (int)$badge_id.",".(int)$seller_id . ")");
+					}
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- create / edit / delete seller groups w/ badges -->
+	<!-- view -->
+	<file name="&adminFolder;/view/template/multiseller/seller-group-form.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<li><a href="#tab-commission" data-toggle="tab"><?php echo $ms_commissions_fees; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+			    <li><a href="#tab-badge" data-toggle="tab"><?php echo $ms_catalog_badges_breadcrumbs; ?></a></li>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				<!--  end commission tab -->
+			]]></search>
+			<add><![CDATA[
+                <!-- begin badge tab -->
+				<div class="tab-pane" id="tab-badge">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"><?php echo $ms_catalog_badges_heading; ?></label>
+                        <div class="col-sm-10">
+                            <div class="well well-sm">
+                                <?php foreach ($badges as $badge) { ?>
+                                <div>
+                                    <input type="checkbox" name="seller_group[badges][]" value="<?php echo $badge['badge_id']; ?>" <?php if (isset($seller_group['badges']) && in_array($badge['badge_id'], $seller_group['badges'])) { ?>checked="checked"<?php } ?> />
+                                    <?php echo $badge['name']; ?> <img src="<?php echo $badge['image']; ?>"/>
+                                </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+				<!-- end badge tab -->
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- controller -->
+	<file name="&adminFolder;/controller/multiseller/seller-group.php">
+		<operation>
+			<search position="after"><![CDATA[
+				parent::__construct($registry);
+			]]></search>
+			<add><![CDATA[
+				$this->data = array_merge($this->data, $this->load->language('multiseller/multiseller'), $this->load->language('module/multimerch_badges'));
+			]]></add>
+		</operation>
+			
+		<!-- create seller group -->
+		<operation>
+			<search position="before"><![CDATA[
+				$this->data['seller_group'] = NULL;
+			]]></search>
+			<add><![CDATA[
+				// badges
+				$badges = $this->MsLoader->MsBadge->getBadges();
+				foreach($badges as &$badge) {
+					$badge['image'] = $this->model_tool_image->resize($badge['image'], 30, 30);
+				}
+				$this->data['badges'] = $badges;
+			]]></add>
+		</operation>
+		
+		<!-- update seller group -->
+		<operation>
+			<search position="before" index="3"><![CDATA[
+				$this->data['breadcrumbs'] = $this->MsLoader->MsHelper->admSetBreadcrumbs(array(
+			]]></search>
+			<add><![CDATA[
+				// badges
+				$badges = $this->MsLoader->MsBadge->getBadges();
+				foreach($badges as &$badge) {
+					$badge['image'] = $this->model_tool_image->resize($badge['image'], 30, 30);
+				}
+				$this->data['badges'] = $badges;
+				
+				$seller_group_badges = $this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $this->request->get['seller_group_id']));
+				$this->data['seller_group']['badges'] = array();
+				foreach($seller_group_badges as $b) {
+					$this->data['seller_group']['badges'][] = $b['badge_id'];
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- model -->
+	<file name="system/library/mssellergroup.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$seller_group_id = $this->db->getLastId();
+			]]></search>
+			<add><![CDATA[
+				// badges
+				$this->db->query("DELETE FROM " . DB_PREFIX . "ms_badge_seller_group WHERE seller_group_id = " . (int)$seller_group_id);
+				if (isset($data['badges'])) {
+					foreach ($data['badges'] as $k => $badge_id) {
+						$this->db->query("INSERT INTO " . DB_PREFIX . "ms_badge_seller_group (badge_id, seller_group_id) VALUES (" . (int)$badge_id.",".(int)$seller_group_id . ")");
+					}
+				}
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				public function editSellerGroup($seller_group_id, $data) {
+			]]></search>
+			<add><![CDATA[
+				// badges
+				$this->db->query("DELETE FROM " . DB_PREFIX . "ms_badge_seller_group WHERE seller_group_id = " . (int)$seller_group_id);
+				if (isset($data['badges'])) {
+					foreach ($data['badges'] as $k => $badge_id) {
+						$this->db->query("INSERT INTO " . DB_PREFIX . "ms_badge_seller_group (badge_id, seller_group_id) VALUES (" . (int)$badge_id.",".(int)$seller_group_id . ")");
+					}
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- add badge link to multimerch menu -->
+	<file name="&adminFolder;/view/template/common/menu.tpl">
+		<operation>
+			<search position="before"><![CDATA[
+				<li><a href="<?php echo $this->url->link('module/multiseller', 'token=' . $this->session->data['token'], 'SSL'); ?>"><?php echo $ms_menu_settings; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+				<li><a href="<?php echo $this->url->link('multiseller/badge', 'token=' . $this->session->data['token'], 'SSL'); ?>"><?php echo $ms_menu_badge; ?></a></li>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="&adminFolder;/controller/common/menu.php">
+		<operation>
+			<search position="after"><![CDATA[
+			public function index() {
+			]]></search>
+			<add><![CDATA[
+			$data = array_merge(isset($data) ? $data : array(), $this->load->language('module/multimerch_badges'));
+			]]></add>
+		</operation>
+	</file>
+	
+	
+	<!-- display badges on product page -->
+	<file name="catalog/view/theme/&themeFolder;/template/product/product.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<li><?php echo $ms_catalog_seller_profile_totalproducts; ?></b> <?php echo $seller['total_products']; ?></li>
+			]]></search>
+			<add><![CDATA[
+			    <li class="ms-badges">
+                    <?php foreach($seller['badges'] as $badge) { ?>
+                        <img src="<?php echo $badge['image']; ?>" title="<?php echo $badge['description']; ?>" />
+                    <?php } ?>
+				</li>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$data['seller']['total_sales'] = $this->MsLoader->MsSeller->getSalesForSeller($seller['seller_id']);
+			]]></search>
+			<add><![CDATA[
+				$badges = array_unique(array_merge(
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_id' => $seller['seller_id'], 'language_id' => $this->config->get('config_language_id'))),
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $seller['ms.seller_group'], 'language_id' => $this->config->get('config_language_id'))),
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $this->config->get('msconf_default_seller_group_id'), 'language_id' => $this->config->get('config_language_id')))
+				), SORT_REGULAR);
+				
+				foreach ($badges as &$badge) {
+					$badge['image'] = $this->model_tool_image->resize($badge['image'], $this->config->get('msconf_badge_width'), $this->config->get('msconf_badge_height'));
+				}
+				$data['seller']['badges'] = $badges;
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- display badges on seller profile page -->
+	<file name="catalog/controller/seller/catalog-seller.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$this->data['seller']['href'] = $this->url->link('seller/catalog-seller/products', 'seller_id=' . $seller['seller_id']);
+			]]></search>
+			<add><![CDATA[
+					// badges
+					$badges = array_unique(array_merge(
+						$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_id' => $seller['seller_id'], 'language_id' => $this->config->get('config_language_id'))),
+						$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $seller['ms.seller_group'], 'language_id' => $this->config->get('config_language_id'))),
+						$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $this->config->get('msconf_default_seller_group_id'), 'language_id' => $this->config->get('config_language_id')))
+					), SORT_REGULAR);		
+			
+					foreach ($badges as &$badge) {
+						$badge['image'] = $this->model_tool_image->resize($badge['image'], $this->config->get('msconf_badge_width'), $this->config->get('msconf_badge_height'));
+					}
+					$this->data['seller']['badges'] = $badges;
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+				/* seller products part */
+			]]></search>
+			<add><![CDATA[
+				// badges
+				$badges = array_unique(array_merge(
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_id' => $seller['seller_id'], 'language_id' => $this->config->get('config_language_id'))),
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $seller['ms.seller_group'], 'language_id' => $this->config->get('config_language_id'))),
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $this->config->get('msconf_default_seller_group_id'), 'language_id' => $this->config->get('config_language_id')))
+				), SORT_REGULAR);		
+		
+				foreach ($badges as &$badge) {
+					$badge['image'] = $this->model_tool_image->resize($badge['image'], $this->config->get('msconf_badge_width'), $this->config->get('msconf_badge_height'));
+				}
+				$this->data['seller']['badges'] = $badges;
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/catalog-seller-profile.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<li><?php echo $ms_catalog_seller_profile_totalproducts; ?> <?php echo $seller['total_products']; ?></li>
+			]]></search>
+			<add><![CDATA[
+				<li>
+				<?php foreach($seller['badges'] as $badge) { ?>
+					<img src="<?php echo $badge['image']; ?>" title="<?php echo $badge['description']; ?>" />
+				<?php } ?>
+				</li>
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- display badges in seller dashboard -->
+	<file name="catalog/controller/seller/account-dashboard.php">
+		<operation>
+			<search position="before"><![CDATA[
+				$this->data['seller'] = array_merge(
+			]]></search>
+			<add><![CDATA[
+				$this->data = array_merge($this->data, $this->load->language('module/multimerch_badges'));
+			
+				$badges = array_unique(array_merge(
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_id' => $seller['seller_id'], 'language_id' => $this->config->get('config_language_id'))),
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $seller['ms.seller_group'], 'language_id' => $this->config->get('config_language_id'))),
+					$this->MsLoader->MsBadge->getSellerGroupBadges(array('seller_group_id' => $this->config->get('msconf_default_seller_group_id'), 'language_id' => $this->config->get('config_language_id')))
+				), SORT_REGULAR);
+		
+				foreach ($badges as &$badge) {
+					$badge['image'] = $this->model_tool_image->resize($badge['image'], $this->config->get('msconf_badge_width'), $this->config->get('msconf_badge_height'));
+				}
+				$seller['badges'] = $badges;
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/account-dashboard.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<p><span><?php echo $ms_account_dashboard_earnings_month; ?>:</span> <span><?php echo $seller['earnings_month']; ?></span></p>
+			]]></search>
+			<add><![CDATA[
+				<h3><?php echo $ms_account_badges; ?></h3>
+				<p>
+				<?php if (isset($seller['badges']) && $seller['badges']) { ?>
+				<?php foreach($seller['badges'] as $badge) { ?>
+					<img src="<?php echo $badge['image']; ?>" title="<?php echo $badge['description']; ?>" />
+				<?php } ?>
+				<?php } else { ?>
+					<p><?php echo $ms_account_badges_nobadges; ?></p>
+				<?php } ?>
+				</p>
+			]]></add>
+		</operation>
+	</file>
+</modification>

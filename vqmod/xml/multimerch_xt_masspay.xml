@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch MassPay Addon</id>
+	<author>http://multimerch.com/</author>
+	<file name="&adminFolder;/controller/multiseller/payment.php">
+		<operation error="log">
+			<search position="after"><![CDATA[
+				public function index() {
+			]]></search>
+			<add><![CDATA[
+				$this->data = array_merge($this->data, $this->load->language("module/multimerch_masspay"));
+				$this->document->addScript('//code.jquery.com/ui/1.11.2/jquery-ui.min.js');
+				$this->document->addScript('view/javascript/multimerch/dialog-masspay.js');
+				$this->document->addStyle('//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css');
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="&adminFolder;/view/template/multiseller/payment.tpl">
+		<operation error="log">
+			<search position="after"><![CDATA[
+				<a href="<?php echo $this->url->link('multiseller/payment/create', 'token=' . $this->session->data['token'], 'SSL'); ?>" data-toggle="tooltip" title="<?php echo $ms_payment_new; ?>" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+			]]></search>
+			<add><![CDATA[
+				<a id="ms-pay" class="ms-button ms-button-paypal-mass-payment v-top" title="<?php echo $ms_button_pay_masspay; ?>"></a>
+				<script>
+                    var msGlobals = {
+                        token : '<?php echo $token; ?>',
+                        ms_payment_confirmation: '<?php echo htmlspecialchars($ms_payment_confirmation, ENT_QUOTES, "UTF-8"); ?>',
+                        ms_payment_pay: '<?php echo htmlspecialchars($ms_payment_pay, ENT_QUOTES, "UTF-8"); ?>',
+                        button_cancel: '<?php echo htmlspecialchars($button_cancel, ENT_QUOTES, "UTF-8"); ?>'
+                    };
+				</script>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="&adminFolder;/controller/multiseller/seller.php">
+		<operation error="log">
+			<search position="after"><![CDATA[
+				public function index() {
+			]]></search>
+			<add><![CDATA[
+				$this->data = array_merge($this->load->language("module/multimerch_masspay"), $this->data);
+				$this->document->addScript('//code.jquery.com/ui/1.11.2/jquery-ui.min.js');
+				$this->document->addScript('view/javascript/multimerch/dialog-masspay.js');
+				$this->document->addStyle('//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css');
+			]]></add>
+		</operation>
+	</file>	
+	
+	<file name="&adminFolder;/view/template/multiseller/seller.tpl">
+		<operation error="log">
+			<search position="after"><![CDATA[
+				<a href="<?php echo $link_create_seller; ?>" data-toggle="tooltip" title="<?php echo $ms_catalog_sellers_create; ?>" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+			]]></search>
+			<add><![CDATA[
+				<a id="ms-pay" class="ms-button ms-button-paypal-mass-seller btn" title="<?php echo $ms_button_pay_masspay; ?>"></a>
+				<a id="ms-pay-all"  class="ms-button ms-button-paypal-mass-seller-all btn" title="<?php echo $ms_button_pay_masspay_all; ?>"></a>
+				<script>
+                    var msGlobals = {
+                        token : '<?php echo $token; ?>',
+                        ms_payment_confirmation: '<?php echo htmlspecialchars($ms_payment_confirmation, ENT_QUOTES, "UTF-8"); ?>',
+                        ms_payment_pay: '<?php echo htmlspecialchars($ms_payment_pay, ENT_QUOTES, "UTF-8"); ?>',
+                        button_cancel: '<?php echo htmlspecialchars($button_cancel, ENT_QUOTES, "UTF-8"); ?>'
+                    };
+				</script>
+			]]></add>
+		</operation>
+	</file>
+</modification>

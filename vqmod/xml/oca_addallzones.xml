@@ -1,0 +1,38 @@
+<modification>
+	<id>OCA_AddAllZones(v1.5.x)</id>
+	<version>1.5</version>
+	<vqmver>2.4.0</vqmver>
+	<author>Joel - http://opencartaddons.com - webmaster@opencartaddons.com</author>
+	<file name="admin/view/template/localisation/geo_zone_form.tpl">
+		<operation error="skip">
+			<search position="after"><![CDATA[<?php echo $button_add_geo_zone; ?>]]></search>
+			<add><![CDATA[
+				<td class="left"><a onclick="addGeoZone();" class="button"><span><?php echo $button_add_geo_zone; ?></span></a> <a onclick="addAllGeoZones();" class="button"><span>Add All Countries</span></a></td>
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[<?php echo $footer; ?>]]></search>
+			<add><![CDATA[
+				<script type="text/javascript"><!--
+					function addAllGeoZones() {
+						<?php foreach ($countries as $country) { ?>
+							html  = '<tbody id="zone_to_geo_zone_row' + zone_to_geo_zone_row + '">';
+							html += '	<tr>';
+							html += '		<td class="left">';
+							html += '			<select name="zone_to_geo_zone[' + zone_to_geo_zone_row + '][country_id]" id="country' + zone_to_geo_zone_row + '" onchange="$(\'#zone' + zone_to_geo_zone_row + '\').load(\'index.php?route=localisation/geo_zone/zone&token=<?php echo $token; ?>&country_id=\' + this.value + \'&zone_id=0\');">';
+							html += '				<option value="<?php echo $country['country_id']; ?>"><?php echo addslashes($country['name']); ?></option>';
+							html += '			</select>';
+							html +=	'		</td>';
+							html += '		<td class="left"><select name="zone_to_geo_zone[' + zone_to_geo_zone_row + '][zone_id]" id="zone' + zone_to_geo_zone_row + '"><option value="0">All zones</option></select></td>';
+							html += '		<td class="left"><a onclick="$(\'#zone_to_geo_zone_row' + zone_to_geo_zone_row + '\').remove();" class="button"><span><?php echo $button_remove; ?></span></a></td>';
+							html += '	</tr>';
+							html += '</tbody>';
+							$('#zone-to-geo-zone > tfoot').before(html);
+							zone_to_geo_zone_row++;
+						<?php } ?>
+					}
+				//--></script>
+			]]></add>
+		</operation>
+	</file>
+</modification>

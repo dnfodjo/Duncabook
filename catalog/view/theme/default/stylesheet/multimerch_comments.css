@@ -1,0 +1,55 @@
+/* catalog comments */
+
+#tab-comments .content span.comment {
+    display: block;
+    font-weight: bold;
+}
+
+#tab-comments .content .comment-name {
+    font-weight: bold;
+}
+
+#tab-comments .content .comment-date {
+    float: right;
+}
+
+#tab-comments .content .comment-content {
+    margin: 10px;
+}	
+
+#pcCommentlist #pagination {
+    margin: 20px auto;
+    float: left;
+    left: 50%;
+    position: relative;
+    
+}
+
+#pcCommentlist #pagination ul {
+    float: left;
+    position: relative;
+    right: 50%;
+}
+
+
+/* dashboard comments */
+
+.ms-account-dashboard table.list.comments {
+	text-align: center;
+}
+
+.ms-account-dashboard table.list.comments tr {
+	height: 25px;
+}
+
+.ms-account-dashboard table.list.comments .name {
+	width: 200px;
+}
+
+.ms-account-dashboard table.list.comments .product {
+	width: 150px;
+}
+
+.ms-account-dashboard table.list.comments .date {
+	width: 75px;
+}

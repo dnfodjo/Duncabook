@@ -1,0 +1,164 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Shipping Edition - Cart</id>
+
+	<!-- ************************************************** -->
+	<!-- * Add "Estimated shipping costs" in the minicart * -->
+	<!-- ************************************************** -->
+
+	<!-- * Edit controller file * -->
+	<file name="catalog/controller/common/cart.php">
+		<!-- * Load language file * -->
+		<operation>
+			<search position="after"><![CDATA[
+				public function index() {
+			]]></search>
+			<add><![CDATA[
+				$data = array_merge(isset($data) ? $data : array(), $this->load->language('module/multiseller_physical'));
+			]]></add>
+		</operation>
+
+		<!-- * Estimate shipping costs * -->
+		<operation>
+			<search position="before"><![CDATA[
+				foreach ($this->cart->getProducts() as $product) {
+			]]></search>
+			<add><![CDATA[
+				$low_border = 0.0;
+				$high_border = 0.0;
+				$total_weight = 0.0;
+				$weight_class = 1;
+				$sellers = array();
+			]]></add>
+		</operation>
+
+		<!-- * Fixed shipping * -->
+		<operation>
+			<search position="after"><![CDATA[
+				foreach ($this->cart->getProducts() as $product) {
+			]]></search>
+			<add><![CDATA[
+				if ($product['shipping'] && $this->config->get('msship_enable_minicart_shipping_estimate')) {
+					$seller_id = $this->MsLoader->MsProduct->getSellerId($product['product_id']);
+					$shipping_type = $this->MsLoader->MsShipping->getSellerShippingType($seller_id);
+					// Fixed Shipping
+					if ($shipping_type == MsShipping::SHIPPING_TYPE_FIXED) {
+						$productShippingMethods = $this->MsLoader->MsShipping->getProductShippingMethods($product['product_id']);
+
+						if (!empty($productShippingMethods)) {
+							//$min = $this->currency->convert($productShippingMethods[0]['cost'] * $product['quantity'], $productShippingMethods[0]['currency_code'], $this->currency->getCode());
+							$min = $productShippingMethods[0]['cost'] * $product['quantity'];
+							$max = 0;
+							foreach ($productShippingMethods as $productShippingMethod) {
+								//if ($this->currency->convert($productShippingMethod['cost'] * $product['quantity'], $productShippingMethod['currency_code'], $this->currency->getCode()) > $max) {
+								if ($productShippingMethod['cost'] * $product['quantity'] > $max) {
+									//$max = $this->currency->convert($productShippingMethod['cost'] * $product['quantity'], $productShippingMethod['currency_code'], $this->currency->getCode());
+									$max = $productShippingMethod['cost'] * $product['quantity'];
+								}
+								//if ($this->currency->convert($productShippingMethod['cost'] * $product['quantity'], $productShippingMethod['currency_code'], $this->currency->getCode()) < $min) {
+								if ($productShippingMethod['cost'] * $product['quantity'] < $min) {
+									//$min = $this->currency->convert($productShippingMethod['cost'] * $product['quantity'], $productShippingMethod['currency_code'], $this->currency->getCode());
+									$min = $productShippingMethod['cost'] * $product['quantity'];
+								}
+							}
+							$low_border += $min;
+							$high_border += $max;
+						}
+					}
+					//Combined shipping
+					else if ($shipping_type == MsShipping::SHIPPING_TYPE_COMBINABLE) {
+						if (!isset($sellers[$seller_id])){
+							$sellers[$seller_id] = array (
+								'seller_id' => $seller_id,
+								'total_weight' => $this->weight->convert($product['weight'], $product['weight_class_id'], $weight_class),
+								'weight_class_id' => $weight_class
+							);
+						} else {
+							$sellers[$seller_id]['total_weight'] += $this->weight->convert($product['weight'], $product['weight_class_id'], $weight_class);
+						}
+					}
+				}
+
+			]]></add>
+		</operation>
+
+		<!-- * Combined shipping * -->
+		<operation>
+			<search position="before" offset="1"><![CDATA[
+				$data['vouchers'] = array();
+			]]></search>
+			<add><![CDATA[
+				foreach ($sellers as $seller) {
+					$sellerShippingMethods = $this->MsLoader->MsShipping->getSellerShippingMethods($seller['seller_id']);
+
+					if (!empty($sellerShippingMethods)) {
+						// Take only full weight steps. Part-steps are rounded to the top
+						$total_weight_units = ceil($this->weight->convert($seller['total_weight'], $seller['weight_class_id'], $weight_class) / $this->weight->convert((float)$sellerShippingMethods[0]['weight_step'], (int)$sellerShippingMethods[0]['weight_class_id'], $weight_class));
+						//$min = $this->currency->convert($sellerShippingMethods[0]['cost_per_unit'] * $total_weight_units, $sellerShippingMethods[0]['currency_code'], $this->currency->getCode());
+						$min = $sellerShippingMethods[0]['cost_per_unit'] * $total_weight_units;
+						$max = 0;
+						foreach ($sellerShippingMethods as $sellerShippingMethod) {
+							$total_weight_units = ceil($this->weight->convert($seller['total_weight'], $seller['weight_class_id'], $weight_class) / $this->weight->convert((float)$sellerShippingMethod['weight_step'], (int)$sellerShippingMethod['weight_class_id'], $weight_class));
+							//if ($this->currency->convert($sellerShippingMethod['cost_per_unit'] * $total_weight_units, $sellerShippingMethod['currency_code'], $this->currency->getCode()) > $max) {
+							if ($sellerShippingMethod['cost_per_unit'] * $total_weight_units > $max) {
+								//$max = $this->currency->convert($sellerShippingMethod['cost_per_unit'] * $total_weight_units, $sellerShippingMethod['currency_code'], $this->currency->getCode());
+								$max = $sellerShippingMethod['cost_per_unit'] * $total_weight_units;
+							}
+							//if ($this->currency->convert($sellerShippingMethod['cost_per_unit'] * $total_weight_units, $sellerShippingMethod['currency_code'], $this->currency->getCode()) < $min) {
+							if ($sellerShippingMethod['cost_per_unit'] * $total_weight_units < $min) {
+								//$min = $this->currency->convert($sellerShippingMethod['cost_per_unit'] * $total_weight_units, $sellerShippingMethod['currency_code'], $this->currency->getCode());
+								$min = $sellerShippingMethod['cost_per_unit'] * $total_weight_units;
+							}
+						}
+						$low_border += $min;
+						$high_border += $max;
+					}
+				}
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+				$data['cart'] = $this->url->link('checkout/cart');
+			]]></search>
+			<add><![CDATA[
+				if ($this->config->get('msship_enable_minicart_shipping_estimate')) {
+					$data['high_border'] = $high_border;
+					$data['estimated_shipping'] = "";
+					if ($low_border != $high_border) {
+						//$data['estimated_shipping'] = $this->currency->format($low_border, $this->currency->getCode(), 1) . " - " . $this->currency->format($high_border, $this->currency->getCode(), 1);
+						$data['estimated_shipping'] = $this->currency->format($low_border, $this->config->get('config_currency'), 1) . " - " . $this->currency->format($high_border, $this->config->get('config_currency'), 1);
+					}
+					else if ((float)$high_border != (float)0) {
+						//$data['estimated_shipping'] = $this->currency->format($high_border, $this->currency->getCode(), 1);
+						$data['estimated_shipping'] = $this->currency->format($high_border, $this->config->get('config_currency'), 1);
+					}
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- * Edit view file * -->
+	<file name="catalog/view/theme/&themeFolder;/template/common/cart.tpl">
+		<operation>
+			<search position="after" offset="5"><![CDATA[
+				<?php foreach ($totals as $total) { ?>
+			]]></search>
+			<add><![CDATA[
+				<?php if (isset($estimated_shipping)) { ?>
+					<tr>
+						<td class="right"><b><?php echo $ms_cart_estimated_shipping; ?></b></td>
+						<td class="right"><?php echo $estimated_shipping; ?></td>
+					</tr>
+					<tr>
+						<td class="right" colspan="2"><?php echo $ms_cart_shipping_varies;?></td>
+					</tr>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+</modification>

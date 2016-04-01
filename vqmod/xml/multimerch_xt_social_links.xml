@@ -1,0 +1,234 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Social Links</id>
+	<author>http://multimerch.com/</author>
+
+    <!-- LIBRARY -->
+	<file name="system/library/mshelper.php">
+		<operation>
+			<search position="after"><![CDATA[
+				class MsHelper extends Model {
+			]]></search>
+			<add><![CDATA[
+				public function isValidUrl($url) {
+				    return preg_match('|^[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
+				    //return (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED));
+	            }
+
+	            public function addScheme($url) {
+	                $scheme = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+
+                    return parse_url($url, PHP_URL_SCHEME) === null ?
+                        $scheme . $url : $url;
+                }
+			]]></add>
+		</operation>
+	</file>
+
+    <!-- ADMIN -->
+    <!-- add social link to multimerch menu -->
+	<file name="&adminFolder;/view/template/common/menu.tpl">
+		<operation>
+			<search position="before"><![CDATA[
+				<li><a href="<?php echo $this->url->link('module/multiseller', 'token=' . $this->session->data['token'], 'SSL'); ?>"><?php echo $ms_menu_settings; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+				<li><a href="<?php echo $this->url->link('multiseller/social_link', 'token=' . $this->session->data['token'], 'SSL'); ?>"><?php echo $ms_menu_social_links; ?></a></li>
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="&adminFolder;/controller/common/menu.php">
+		<operation>
+			<search position="after"><![CDATA[
+			public function index() {
+			]]></search>
+			<add><![CDATA[
+			$data = array_merge(isset($data) ? $data : array(), $this->load->language('module/multimerch_social_links'));
+			]]></add>
+		</operation>
+	</file>
+
+    <!-- CATALOG -->
+    <!-- seller profile form -->
+    <file name="catalog/controller/seller/account-profile.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$seller = $this->MsLoader->MsSeller->getSeller($this->customer->getId());
+			]]></search>
+			<add><![CDATA[
+				// social links
+				$this->MsLoader->MsHelper->addStyle('multimerch_social_links');
+				$this->data = array_merge($this->data, $this->load->language('module/multimerch_social_links'));
+
+				if ($this->config->get('msconf_sl_status')) {
+				    $this->data['social_channels'] = $this->MsLoader->MsSocialLink->getChannels();
+				    foreach ($this->data['social_channels'] as &$c) {
+				        $c['image'] = $this->MsLoader->MsFile->resizeImage($c['image'], 34, 34);
+				    }
+
+                    if ($seller) {
+				        $seller['social_links'] = $this->MsLoader->MsSocialLink->getSellerChannels($this->customer->getId());
+				    }
+				}
+			]]></add>
+		</operation>
+
+        <!-- validation -->
+        <operation>
+			<search position="before"><![CDATA[
+				if (empty($json['errors'])) {
+			]]></search>
+			<add><![CDATA[
+			    if ($this->config->get('msconf_sl_status')) {
+                    foreach($data['seller']['social_links'] as &$link) {
+                        if(!$this->MsLoader->MsHelper->isValidUrl($link)) {
+                            $link = '';
+                        }
+                    }
+			    }
+			]]></add>
+		</operation>
+
+        <!-- new seller -->
+        <operation>
+			<search position="after"><![CDATA[
+				$this->MsLoader->MsSeller->createSeller($data['seller']);
+			]]></search>
+			<add><![CDATA[
+			    if ($this->config->get('msconf_sl_status')) $this->MsLoader->MsSocialLink->editSellerChannels($this->customer->getId(), $data['seller']);
+			]]></add>
+		</operation>
+
+        <!-- edit seller -->
+        <operation>
+			<search position="after"><![CDATA[
+				$this->MsLoader->MsSeller->editSeller($data['seller']);
+			]]></search>
+			<add><![CDATA[
+				if ($this->config->get('msconf_sl_status')) $this->MsLoader->MsSocialLink->editSellerChannels($this->customer->getId(), $data['seller']);
+			]]></add>
+		</operation>
+    </file>
+
+    <file name="catalog/view/theme/&themeFolder;/template/multiseller/account-profile.tpl">
+		<operation>
+			<search position="before"><![CDATA[
+				<?php if ($ms_account_sellerinfo_terms_note) { ?>
+			]]></search>
+			<add><![CDATA[
+			    <?php if ($this->config->get('msconf_sl_status')) { ?>
+			    <fieldset>
+				<legend><?php echo $ms_sl_social_media; ?></legend>
+                <?php foreach($social_channels as $channel) { ?>
+                <div class="form-group social_links">
+                    <label class="col-sm-2 control-label">
+                        <img src="<?php echo $channel['image']; ?>" title="<?php echo $channel['name']; ?>" />
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control"  name="seller[social_links][<?php echo $channel['channel_id'] ?>]" value="<?php echo isset($seller['social_links'][$channel['channel_id']]) ? $seller['social_links'][$channel['channel_id']]['channel_value'] : ''; ?>" />
+                        <p class="ms-note"><?php echo $channel['description']; ?></p>
+                    </div>
+                </div>
+                <?php } ?>
+                </fieldset>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+
+    <!-- product form -->
+	<file name="catalog/view/theme/&themeFolder;/template/product/product.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<!-- end seller block -->
+			]]></search>
+			<add><![CDATA[
+			    <?php if ($this->config->get('msconf_sl_status') && !empty($seller['social_links'])) { ?>
+                    <div class="ms-social-links">
+                        <ul>
+                            <?php foreach($seller['social_links'] as $link) { ?>
+                                <?php if($this->MsLoader->MsHelper->isValidUrl($link['channel_value'])) { ?>
+                                    <li><a target="_blank" href="<?php echo $this->MsLoader->MsHelper->addScheme($link['channel_value']); ?>"><img src="<?php echo $link['image']; ?>" /></a></li>
+                                <?php } ?>
+                            <?php } ?>
+                        </ul>
+                    </div>
+                    <hr />
+                    <!-- end seller social -->
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$data['seller']['total_sales'] = $this->MsLoader->MsSeller->getSalesForSeller($seller['seller_id']);
+			]]></search>
+			<add><![CDATA[
+			    if ($this->config->get('msconf_sl_status')) {
+			        $this->MsLoader->MsHelper->addStyle('multimerch_social_links');
+                    $data['seller']['social_links'] = $this->MsLoader->MsSocialLink->getSellerChannels($seller['seller_id']);
+                    foreach ($data['seller']['social_links'] as &$link) {
+                        if($this->MsLoader->MsHelper->isValidUrl($link['channel_value'])) {
+                            $link['image'] = $this->model_tool_image->resize($link['image'], $this->config->get('msconf_sl_icon_width'), $this->config->get('msconf_sl_icon_height'));
+                        } else {
+                            unset($link);
+                        }
+                    }
+				}
+			]]></add>
+		</operation>
+	</file>
+
+    <!-- seller profile view -->
+    <file name="catalog/controller/seller/catalog-seller.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$this->data['seller']['href'] = $this->url->link('seller/catalog-seller/products', 'seller_id=' . $seller['seller_id']);
+			]]></search>
+			<add><![CDATA[
+			    if ($this->config->get('msconf_sl_status')) {
+			        $this->MsLoader->MsHelper->addStyle('multimerch_social_links');
+                    $this->data['seller']['social_links'] = $this->MsLoader->MsSocialLink->getSellerChannels($seller['seller_id']);
+                    foreach ($this->data['seller']['social_links'] as &$link) {
+                        if($this->MsLoader->MsHelper->isValidUrl($link['channel_value'])) {
+                            $link['image'] = $this->model_tool_image->resize($link['image'], $this->config->get('msconf_sl_icon_width'), $this->config->get('msconf_sl_icon_height'));
+                        } else {
+                            unset($link);
+                        }
+                    }
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/catalog-seller-profile.tpl">
+		<operation>
+			<search position="before"><![CDATA[
+				$this->config->get('mmess_conf_enable')
+			]]></search>
+			<add><![CDATA[
+			    <?php if ($this->config->get('msconf_sl_status') && !empty($seller['social_links'])) { ?>
+                    <hr />
+                    <div class="ms-social-links">
+                        <h3><?php echo $ms_catalog_seller_profile_social; ?></h3>
+                        <ul>
+                            <?php foreach($seller['social_links'] as $link) { ?>
+                                <?php if($this->MsLoader->MsHelper->isValidUrl($link['channel_value'])) { ?>
+                                    <li><a target="_blank" href="<?php echo $this->MsLoader->MsHelper->addScheme($link['channel_value']); ?>"><img src="<?php echo $link['image']; ?>" /></a></li>
+                                <?php } ?>
+                            <?php } ?>
+                        </ul>
+                    </div>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+</modification>

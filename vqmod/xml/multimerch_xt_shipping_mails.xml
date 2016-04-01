@@ -1,0 +1,133 @@
+<?xml version="1.0" ?>
+<modification>
+	<id>MultiMerch Shipping Edition - Mails</id>
+
+	<file name="system/library/msmail.php">
+		<!-- add new mail types -->
+		<operation>
+			<search position="after"><![CDATA[
+				const SMT_REMIND_LISTING = 30;
+			]]></search>
+			<add><![CDATA[
+				const SMT_MARK_SHIPPED = 50;
+				const SMT_TRACKING_INFORMATION = 51;
+			]]></add>
+		</operation>
+
+		<!-- load language file -->
+		<operation>
+			<search position="after"><![CDATA[
+				parent::__construct($registry);
+			]]></search>
+			<add><![CDATA[
+				$this->load->language('multiseller/multiseller_physical');
+			]]></add>
+		</operation>
+
+		<!-- add shipping parts -->
+		<operation>
+			<search position="after"><![CDATA[
+				$order_products = $this->MsLoader->MsOrderData->getOrderProducts(array('order_id' => $data['order_id'], 'seller_id' => $data['seller_id']));
+			]]></search>
+			<add><![CDATA[
+				$shipping_type = $this->MsLoader->MsShipping->getOrderShippingType($data['order_id'], $data['seller_id']);
+				$total_shipping_cost = 0.0;
+				if ($shipping_type == MsShipping::SHIPPING_TYPE_COMBINABLE) {
+					$seller_shipping = $this->MsLoader->MsShipping->getOrderSellerShipping($data['order_id'], $data['seller_id']);
+					$total_shipping_cost = $seller_shipping['shipping_cost'];
+				}
+				$anything_shippable = false;
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+				$products .= "\n";
+			]]></search>
+			<add><![CDATA[
+                    $products .= "\n";
+
+					if ($this->MsLoader->MsShipping->getOrderProductShippable($data['order_id'], $p['product_id'])) {
+						$anything_shippable = true;
+						// Fixed shipping: show selected shipping method for each product, show shipping price
+						if ($shipping_type == MsShipping::SHIPPING_TYPE_FIXED) {
+							$product_shipping = $this->MsLoader->MsShipping->getOrderProductShipping($data['order_id'], $p['product_id']);
+							$total_shipping_cost += $product_shipping['shipping_cost'];
+							$products .= "\t" . sprintf($this->language->get('ms_mail_product_shipping_info_fixed'), $product_shipping['shipping_method_name'], $this->currency->format($product_shipping['shipping_cost'], $this->config->get('config_currency')));
+						}
+					}
+			]]></add>
+		</operation>
+
+		<!-- add new mail types -->
+		<operation>
+			<search position="before"><![CDATA[
+				case self::SMT_PRIVATE_MESSAGE:
+			]]></search>
+			<add><![CDATA[
+				case self::SMT_MARK_SHIPPED:
+					$seller = $this->MsLoader->MsSeller->getSeller($data['seller_id']);
+					$order_shipping = $this->MsLoader->MsShipping->getOrderShippingTracking($data['order_id'], $data['seller_id']);
+					$mail_subject .= $this->language->get('ms_mail_subject_mark_shipped');
+					$mail_text .= sprintf($this->language->get('ms_mail_mark_shipped'), $data['order_id'], $seller['ms.nickname']);
+					if (isset($order_shipping['tracking_number'])) {
+						$mail_text .= sprintf($this->language->get('ms_mail_tracking_number'), $order_shipping['tracking_number']);
+					}
+					if (isset($order_shipping['comment'])) {
+						$mail_text .= sprintf($this->language->get('ms_mail_tracking_info'), $order_shipping['comment']);
+					}
+					break;
+			
+				case self::SMT_TRACKING_INFORMATION:
+					$seller = $this->MsLoader->MsSeller->getSeller($data['seller_id']);
+					$order_shipping = $this->MsLoader->MsShipping->getOrderShippingTracking($data['order_id'], $data['seller_id']);
+					$mail_subject .= $this->language->get('ms_mail_subject_tracking_information');
+					$mail_text .= sprintf($this->language->get('ms_mail_tracking_information'), $data['order_id'], $seller['ms.nickname']);
+					if (isset($order_shipping['tracking_number'])) {
+						$mail_text .= sprintf($this->language->get('ms_mail_tracking_number'), $order_shipping['tracking_number']);
+					}
+					if (isset($order_shipping['comment'])) {
+						$mail_text .= sprintf($this->language->get('ms_mail_tracking_info'), $order_shipping['comment']);
+					}
+					break;
+			]]></add>
+		</operation>
+
+		<!-- replace totals -->
+		<operation>
+			<search position="replace" offset="8"><![CDATA[
+				$total = $this->currency->format($this->MsLoader->MsOrderData->getOrderTotal($data['order_id'], array('seller_id' => $data['seller_id'])), $this->config->get('config_currency'));
+			]]></search>
+			<add><![CDATA[
+				$total_products = $this->MsLoader->MsOrderData->getOrderTotal($data['order_id'], array('seller_id' => $data['seller_id']));
+				$total_products_formatted = $this->currency->format($total_products, $this->config->get('config_currency'));
+				
+				$mail_subject .= $this->language->get('ms_mail_subject_product_purchased');
+				if (!$this->config->get('msconf_hide_emails_in_emails')) {
+					$mail_text .= sprintf($this->language->get('ms_mail_product_purchased_physical'), $this->config->get('config_name'), $order_info['firstname'] . ' ' . $order_info['lastname'], $order_info['email'], $products);
+				} else { 
+					$mail_text .= sprintf($this->language->get('ms_mail_product_purchased_physical_no_email'), $this->config->get('config_name'), $order_info['firstname'] . ' ' . $order_info['lastname'], $products);
+				}
+				
+				// Total Product Price
+				$mail_text .= sprintf($this->language->get('ms_mail_product_total_price'), $total_products_formatted);
+				
+				if ($anything_shippable) {
+					// Total Shipping
+					if ($shipping_type == MsShipping::SHIPPING_TYPE_FIXED) {
+						$mail_text .= sprintf($this->language->get('ms_mail_product_total_shipping'), $this->currency->format($total_shipping_cost, $this->config->get('config_currency')));
+					} else if ($shipping_type == MsShipping::SHIPPING_TYPE_COMBINABLE) {
+						$mail_text .= sprintf($this->language->get('ms_mail_product_shipping_method'), $seller_shipping['shipping_method_name']);
+						$mail_text .= sprintf($this->language->get('ms_mail_product_total_shipping'), $this->currency->format($total_shipping_cost, $this->config->get('config_currency')));
+					}
+					
+					// Total
+					$mail_text .= sprintf($this->language->get('ms_mail_total_price_with_shipping'), $this->currency->format($total_products + $total_shipping_cost, $this->config->get('config_currency')));
+					
+					// Shipping Address
+					$mail_text .= sprintf($this->language->get('ms_mail_product_purchased_info'), $order_info['shipping_firstname'], $order_info['shipping_lastname'], $order_info['shipping_company'], $order_info['shipping_address_1'], $order_info['shipping_address_2'], $order_info['shipping_city'], $order_info['shipping_postcode'], $order_info['shipping_zone'], $order_info['shipping_country']);
+				}
+			]]></add>
+		</operation>
+	</file>
+</modification>

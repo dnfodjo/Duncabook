@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+]>
+<modification>
+	<id>MultiMerch Top Sellers Module</id>
+	<author>http://multimerch.com/</author>
+	
+	<!-- clear top seller cache -->
+	<file name="catalog/model/checkout/order.php">
+		<operation>
+			<search position="after"><![CDATA[
+				public function addOrder($data) {
+			]]></search>
+			<add><![CDATA[
+				$this->cache->delete("multimerch_topsellers");
+			]]></add>
+		</operation>
+	</file>
+</modification>

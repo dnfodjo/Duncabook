@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+]>
+<modification>
+	<!-- opencart2 loader magic -->
+	<file name="system/engine/loader.php">
+		<operation>
+			<search position="after"><![CDATA[
+				final class Loader {
+			]]></search>
+			<add><![CDATA[
+				public function __get($key) {
+					return $this->registry->get($key);
+				}
+
+				public function __set($key, $value) {
+					$this->registry->set($key, $value);
+				}
+			]]></add>
+		</operation>
+	</file>
+</modification>

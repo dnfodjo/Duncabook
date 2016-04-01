@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+]>
+<modification>
+	<id>MultiMerch Shipping Edition - Admin</id>
+	<file name="&adminFolder;/controller/multiseller/base.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$this->data = array_merge($this->data, $this->load->language('multiseller/multiseller'));
+			]]></search>
+			<add><![CDATA[
+				$this->data = array_merge($this->data, $this->load->language('multiseller/multiseller_physical'));
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="&adminFolder;/view/template/common/menu.tpl">
+		<operation>
+			<search position="before"><![CDATA[
+				<li><a href="<?php echo $this->url->link('module/multiseller', 'token=' . $this->session->data['token'], 'SSL'); ?>"><?php echo $ms_menu_settings; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+				<li><a href="<?php echo $this->url->link('multiseller/shipping-method', 'token=' . $this->session->data['token'], 'SSL'); ?>"><?php echo $ms_menu_shipping_methods; ?></a></li>
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="&adminFolder;/controller/common/menu.php">
+		<operation>
+			<search position="after"><![CDATA[
+			public function index() {
+			]]></search>
+			<add><![CDATA[
+			$data = array_merge(isset($data) ? $data : array(), $this->load->language('multiseller/multiseller_physical'));
+			]]></add>
+		</operation>
+	</file>
+</modification>

@@ -1,0 +1,150 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Private Messaging System</id>
+	<author>http://multimerch.com/</author>
+	
+	<!-- enable messaging -->
+	<file name="catalog/controller/seller/catalog-seller.php">
+		<operation>
+			<search position="after"><![CDATA[
+				/* pm enabled */
+			]]></search>
+			<add><![CDATA[
+			    if ($this->config->get('mmess_conf_enable') == 1) {
+                    $conversation_id = $this->MsLoader->MsConversation->createConversation(
+                        array(
+                            'product_id' => $product_id,
+                            'title' => $title,
+                        )
+                    );
+
+                    $this->MsLoader->MsMessage->createMessage(
+                        array(
+                            'conversation_id' => $conversation_id,
+                            'from' => $this->customer->getId(),
+                            'to' => $seller_id,
+                            'message' => $message_text
+                        )
+                    );
+
+                    $mails[] = array(
+                        'type' => MsMail::SMT_PRIVATE_MESSAGE,
+                        'data' => array(
+                            'recipients' => $seller_email,
+                            'customer_name' => $customer_name,
+                            'customer_message' => $message_text,
+                            'title' => $title,
+                            'product_id' => $product_id,
+                            'addressee' => $seller_name
+                        )
+                    );
+
+                    $this->MsLoader->MsMail->sendMails($mails);
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- display messaging in seller dashboard -->
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/account-dashboard.tpl">
+		<operation>
+			<search position="before"><![CDATA[
+				<?php if ($this->config->get('msconf_allow_withdrawal_requests')) { ?>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('mmess_conf_enable') == 1) { ?>
+				<a href="<?php echo $this->url->link('account/msconversation', '', 'SSL'); ?>">
+					<img src="catalog/view/theme/<?php echo $this->config->get('config_template'); ?>/image/ms-envelope-96.png" />
+					<span><?php echo $ms_account_messages; ?></span>
+				</a>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- Conversations link for non-sellers in the "My Account" Area -->
+	<file name="catalog/view/theme/&themeFolder;/template/account/account.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+			    <li><a href="<?php echo $wishlist; ?>"><?php echo $text_wishlist; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('mmess_conf_enable')) { ?>
+					<li>
+						<a href="<?php echo $this->url->link('account/msconversation', '', 'SSL'); ?>"><?php echo $ms_account_messages; ?></a>
+					</li>
+				<?php } ?>
+			]]></add>
+		</operation>
+
+        <!-- unread PM notification -->
+		<operation>
+			<search position="after"><![CDATA[
+				<h2><?php echo $text_my_account; ?></h2>
+			]]></search>
+			<add><![CDATA[
+				<?php $unread_messages = (int)$this->MsLoader->MsConversation->unreadMessages($this->customer->getId()); ?>
+				<?php if ($unread_messages) { ?>
+                    <div class="alert alert-danger hidden"><i class="fa fa-exclamation-circle">
+                        <?php if ($unread_messages == 1) {
+                            echo $ms_account_unread_pm;
+                        } else {
+                            echo sprintf($ms_account_unread_pms, $unread_messages);
+                        }?>
+                        </i><button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+				<?php } ?>
+			]]></add>
+		</operation>
+
+        <!-- graphical menu entry -->
+		<operation>
+			<search position="after" offset="3"><![CDATA[
+				<?php echo $ms_account_stats; ?>
+			]]></search>
+			<add><![CDATA[
+			<?php if ($ms_seller_created && $this->MsLoader->MsSeller->getStatus($this->customer->getId()) == MsSeller::STATUS_ACTIVE) { ?>
+				<?php if ($this->config->get('mmess_conf_enable')) { ?>
+					<li>
+						<a href="<?php echo $this->url->link('account/msconversation', '', 'SSL'); ?>">
+                            <?php if($this->config->get('msconf_graphical_sellermenu')) { ?>
+                                <img src="catalog/view/theme/<?php echo $this->config->get('config_template'); ?>/image/ms-envelope-96.png" />
+                            <?php } ?>
+                            <?php echo $ms_account_messages; ?>
+					    </a>
+					</li>
+				<?php } ?>
+			<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- seller account SIDEBAR area links -->
+	<file name="catalog/view/theme/&themeFolder;/template/module/account.tpl">
+		<operation>
+			<search position="before" offset="1"><![CDATA[
+			    <a href="<?php echo $logout; ?>" class="list-group-item"><?php echo $text_logout; ?></a>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('mmess_conf_enable')) { ?>
+					<a href="<?php echo $this->url->link('account/msconversation', '', 'SSL'); ?>" class="list-group-item"><?php echo $ms_account_messages; ?></a>
+				<?php } ?>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				<a class="list-group-item" href= "<?php echo $this->url->link('seller/account-transaction', '', 'SSL'); ?>"><?php echo $ms_account_transactions; ?></a>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('mmess_conf_enable')) { ?>
+				    <a href="<?php echo $this->url->link('account/msconversation', '', 'SSL'); ?>" class="list-group-item"><?php echo $ms_account_messages; ?></a>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+</modification>

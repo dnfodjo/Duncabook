@@ -1,0 +1,14 @@
+---------- Date: 2015-12-15 02:59:03 ~ IP : 107.213.20.197 ----------
+REQUEST URI : /admin/index.php?route=marketing/contact&token=ul3WZaA9jMeaaalRoUPDlA15pWiGPf3u
+MOD DETAILS:
+   modFile   : /home2/duncaboo/public_html/vqmod/xml/multimerch_core_admin.xml
+   id        : MultiMerch Core Admin Mods
+   version   : 
+   vqmver    : 
+   author    : http://multimerch.com/
+
+File Name    : admin/controller/marketing/contact.php(0)
+VQModObject::applyMod - SEARCH NOT FOUND (ABORTING MOD): $this->data['cancel'] = $this->url->link('sale/contact', 'token=' . $this->session->data['token'], 'SSL');
+----------------------------------------------------------------------
+
+

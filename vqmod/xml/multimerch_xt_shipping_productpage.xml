@@ -1,0 +1,179 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Shipping Edition - Product page</id>
+	
+	<!-- ********************************************************************* -->
+	<!-- * Add message about combined shipping of seller to the product page * -->
+	<!-- ********************************************************************* -->
+	
+	<!-- * Edit view file * -->
+	<file name="catalog/view/theme/&themeFolder;/template/product/product.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<li><?php echo $ms_catalog_seller_profile_totalproducts; ?></b> <?php echo $seller['total_products']; ?></li>
+			]]></search>
+			<add><![CDATA[
+			    <?php if ($seller['shipping_type'] == MsShipping::SHIPPING_TYPE_COMBINABLE) { ?>
+					<li><?php echo $ms_seller_combinable_shipping; ?></b></li>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Edit controller file * -->
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$data = array_merge($data, $this->load->language('multiseller/multiseller'));
+			]]></search>
+			<add><![CDATA[
+			    $data = array_merge($data, $this->load->language('multiseller/multiseller_physical'));
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				$data['seller']['nickname'] = $seller['ms.nickname'];
+			]]></search>
+			<add><![CDATA[
+			    $data['seller']['shipping_type'] = $seller['ms.shipping_type'];
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- ************************************************ -->
+	<!-- * Add info whether product is digital/tangible * -->
+	<!-- ************************************************ -->
+
+	<!-- * Edit view file * -->
+	<file name="catalog/view/theme/&themeFolder;/template/product/product.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<li><?php echo $text_stock; ?> <?php echo $stock; ?></li>
+			]]></search>
+			<add><![CDATA[
+			    <?php if ($shippable) { ?>
+			        <li><?php echo $ms_shippable_product; ?></li>
+				<?php } else { ?>
+				    <li><?php echo $ms_digital_product; ?></li>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- * Edit controller file * -->
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$this->load->model('catalog/review');
+			]]></search>
+			<add><![CDATA[
+				if (isset($seller) && !empty($seller)) {
+					$geo_zones = implode( ", " , $this->MsLoader->MsShipping->getShippingGeoZones($seller['ms.shipping_type'], $product_id, $seller_id) );
+					$data['ms_shipping_to'] = sprintf($this->language->get('ms_shipping_destinations'), $geo_zones);
+				}
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- ******************************************************** -->
+	<!-- * Add shipping cost estimation tab to the product page * -->
+	<!-- ******************************************************** -->
+	
+	<!-- * Edit view file * -->
+	<file name="catalog/view/theme/&themeFolder;/template/product/product.tpl">
+		<operation>
+			<search position="before" offset="1"><![CDATA[
+				<div class="tab-content">
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('msship_product_shipping_cost_estimation') && $shippable && $is_seller) { ?>
+					<li><a href="#tab-shipping-estimation" data-toggle="tab"><?php echo $ms_tab_shipping_estimation; ?></a></li>
+				<?php } ?>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				<div class="tab-content">
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('msship_product_shipping_cost_estimation') && $shippable && $is_seller) { ?>
+				 <div class="tab-pane" id="tab-shipping-estimation">
+				    <form class="form-horizontal">
+                    <p><?php echo $ms_select_geo_zone; ?></p>
+
+					<div class="form-group required">
+                    <label class="col-sm-2 control-label" for="input-country"><?php echo $ms_seller_shipping_method_geo_zone; ?></label>
+                    <div class="col-sm-10">
+					<select id="shipping_geo_zone" name="shipping_geo_zone" class="form-control">
+						<?php foreach ($geo_zones as $geo_zone) { ?>
+							<option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
+						<?php } ?>
+					</select>
+					</div>
+					</div>
+
+                    <div class="shipping_methods"></div>
+
+                    <input type="button" value="<?php echo $ms_button_get_rates; ?>" id="button_get_rates" class="btn btn-primary" />
+
+					</form>
+  				</div>
+				<?php } ?>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+				<?php echo $footer; ?>
+			]]></search>
+			<add><![CDATA[
+				<script type="text/javascript"><!--
+					var shipping_estimate_product_id = <?php echo $product_id; ?>;
+				//--></script>
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Edit model file * -->
+	<file name="catalog/model/catalog/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+			    'product_id'       => $query->row['product_id'],
+			]]></search>
+			<add><![CDATA[
+				'shipping'         => $query->row['shipping'],
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Edit controller file * -->
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="before"><![CDATA[
+			    $data['heading_title'] = $product_info['name'];
+			]]></search>
+			<add><![CDATA[
+				$data['shippable'] = $product_info['shipping'];
+				$data['is_seller'] = $this->MsLoader->MsProduct->getSellerId($product_id);
+			]]></add>
+		</operation>
+	
+		<operation>
+			<search position="before"><![CDATA[
+			    $data['tab_description'] = $this->language->get('tab_description');
+			]]></search>
+			<add><![CDATA[
+				if ($this->config->get('msship_product_shipping_cost_estimation')) {
+					$data['geo_zones'] = $this->MsLoader->MsShipping->getGeoZones();
+					$this->document->addScript('catalog/view/javascript/shipping-estimation.js');
+				}
+			]]></add>
+		</operation>
+	</file>
+</modification>

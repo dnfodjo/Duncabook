@@ -1,0 +1,14 @@
+[12-Dec-2015 20:30:57 America/Denver] PHP Parse error:  syntax error, unexpected '$this' (T_VARIABLE) in /home2/duncaboo/public_html/catalog/controller/seller/account-order.php on line 447
+[12-Dec-2015 20:30:59 America/Denver] PHP Parse error:  syntax error, unexpected '$this' (T_VARIABLE) in /home2/duncaboo/public_html/catalog/controller/seller/account-order.php on line 447
+[12-Dec-2015 20:31:12 America/Denver] PHP Parse error:  syntax error, unexpected '$this' (T_VARIABLE) in /home2/duncaboo/public_html/catalog/controller/seller/account-order.php on line 447
+[12-Dec-2015 22:12:14 America/Denver] PHP Fatal error:  Call to a member function getId() on a non-object in /home2/duncaboo/public_html/catalog/controller/seller/account-order.php on line 457
+[12-Dec-2015 22:13:01 America/Denver] PHP Fatal error:  Call to a member function getId() on a non-object in /home2/duncaboo/public_html/catalog/controller/seller/account-order.php on line 457
+[22-Mar-2016 17:07:02 America/Denver] PHP Warning:  mysqli::mysqli(): (42000/1203): User duncaboo_user already has more than 'max_user_connections' active connections in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 7
+[22-Mar-2016 17:07:02 America/Denver] PHP Notice:  Error: Could not make a database link (1203) User duncaboo_user already has more than 'max_user_connections' active connections in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 10
+[22-Mar-2016 17:07:02 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 58
+[22-Mar-2016 17:07:02 America/Denver] PHP Warning:  mysqli::mysqli(): (42000/1203): User duncaboo_user already has more than 'max_user_connections' active connections in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 7
+[22-Mar-2016 17:07:02 America/Denver] PHP Notice:  Error: Could not make a database link (1203) User duncaboo_user already has more than 'max_user_connections' active connections in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 10
+[22-Mar-2016 17:07:02 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 58
+[22-Mar-2016 17:07:02 America/Denver] PHP Warning:  mysqli::mysqli(): (42000/1203): User duncaboo_user already has more than 'max_user_connections' active connections in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 7
+[22-Mar-2016 17:07:02 America/Denver] PHP Notice:  Error: Could not make a database link (1203) User duncaboo_user already has more than 'max_user_connections' active connections in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 10
+[22-Mar-2016 17:07:02 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 58

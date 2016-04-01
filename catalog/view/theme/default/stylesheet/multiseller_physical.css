@@ -1,0 +1,26 @@
+.ms-shipping tr > td {
+	padding-bottom: 10px;
+	vertical-align: top;
+}
+
+.ms-shipping tr td:first-child {
+	padding-top: 5px;
+	width: 150px;
+}
+
+.ms-shipping-choice td {
+	margin-right: 20px;
+	margin-left: 20px;
+	padding-right: 20px;
+	padding-left: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.ms-shipping-settings {
+	width: 95%;
+}
+
+.ms-button-markshipped {
+	background-image: url(../image/ms-woodbox-tick.png);
+}

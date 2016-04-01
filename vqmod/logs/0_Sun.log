@@ -1,0 +1,29 @@
+---------- Date: 2015-12-13 04:32:26 ~ IP : 107.213.20.197 ----------
+REQUEST URI : /admin/index.php?route=sale/order/info&token=9jqAEJOr7HEIo6XH53P7iUolqdlqj6Pc&order_id=9
+MOD DETAILS:
+   modFile   : /home2/duncaboo/public_html/vqmod/xml/multimerch_core_admin.xml
+   id        : MultiMerch Core Admin Mods
+   version   : 
+   vqmver    : 
+   author    : http://multimerch.com/
+
+File Name    : admin/view/template/sale/order_info.tpl(2)
+VQModObject::applyMod - SEARCH NOT FOUND (ABORTING MOD): <td colspan="4" class="text-right"><?php echo $totals['title']; ?>:</td>
+----------------------------------------------------------------------
+
+
+---------- Date: 2015-12-13 18:13:11 ~ IP : 107.213.20.197 ----------
+REQUEST URI : /index.php?route=account/login
+MOD DETAILS:
+   modFile   : /home2/duncaboo/public_html/vqmod/xml/multimerch_core_sellermenu.xml
+   id        : MultiMerch Core Seller Menu
+   version   : 
+   vqmver    : 
+   author    : http://multimerch.com/
+
+File Name    : catalog/view/theme/default/template/account/login.tpl(0)
+VQModObject::applyMod - SEARCH NOT FOUND (SKIPPED): <a href="<?php echo $register; ?>" class="btn btn-primary"><?php echo $button_continue; ?></a></div>
+
+----------------------------------------------------------------------
+
+

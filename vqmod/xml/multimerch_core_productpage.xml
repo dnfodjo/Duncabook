@@ -1,0 +1,207 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Core Product Page Mods</id>
+	<author>http://multimerch.com/</author>
+	
+	<file name="catalog/view/theme/&themeFolder;/template/product/product.tpl">
+        <!-- seller information on product page -->
+		<operation>
+			<search position="before" offset="1" index="1"><![CDATA[
+			<div class="rating">
+			]]></search>
+			<add><![CDATA[
+			<?php if (isset($seller) && !empty($seller)) { ?>
+			<hr />
+			<div class="ms-sellerprofile description">
+				<h3><?php echo $ms_catalog_product_sellerinfo; ?></h3>
+				<div class="seller-data">
+					<div class="avatar-box">
+						<a href="<?php echo $seller['href']; ?>"><img src="<?php echo $seller['thumb']; ?>" /></a>
+					</div>
+					<div class="info-box">
+					<ul class="list-unstyled">
+					    <li><a class="nickname" style="text-decoration: none" href="<?php echo $seller['href']; ?>"><b><?php echo $seller['nickname']; ?></b></a></li>
+						<?php if ($seller['country']) { ?>
+							<li><?php echo $ms_catalog_seller_profile_country; ?></b> <?php echo $seller['country']; ?></li>
+						<?php } ?>
+
+						<?php if ($seller['zone']) { ?>
+							<li><?php echo $ms_catalog_seller_profile_zone; ?></b> <?php echo $seller['zone']; ?></li>
+						<?php } ?>
+
+						<?php if ($seller['company']) { ?>
+							<li><?php echo $ms_catalog_seller_profile_company; ?></b> <?php echo $seller['company']; ?></li>
+						<?php } ?>
+
+						<?php if ($seller['website']) { ?>
+							<li><?php echo $ms_catalog_seller_profile_website; ?></b> <?php echo $seller['website']; ?></li>
+						<?php } ?>
+
+						<li><?php echo $ms_catalog_seller_profile_totalsales; ?></b> <?php echo $seller['total_sales']; ?></li>
+						<li><?php echo $ms_catalog_seller_profile_totalproducts; ?></b> <?php echo $seller['total_products']; ?></li>
+                        <?php if ($this->config->get('mmess_conf_enable') || $this->config->get('msconf_enable_private_messaging') == 2) { ?>
+                            <?php if ((!$this->customer->getId()) || ($this->customer->getId() != $seller['seller_id'])) { ?>
+                                <?php echo $contactForm; ?>
+                                <div class="contact">
+                                    <?php if ($this->customer->getId()) { ?>
+                                      <div class="button-group">
+                                        <button type="button" class="btn btn-default btn-block ms-sellercontact" data-toggle="modal" data-target="#contactDialog"><span><?php echo $ms_catalog_product_contact; ?></span></button>
+                                      </div>
+                                    <?php } else { ?>
+                                        <?php echo sprintf($this->language->get('ms_sellercontact_signin'), $this->url->link('account/login', '', 'SSL'), $seller['nickname']); ?>
+                                    <?php } ?>
+                                </div>
+                            <?php } ?>
+                        <?php } ?>
+					</ul>
+					</div>
+				</div>
+				<!-- end sellerinfo -->
+			</div>
+			<hr />
+			<!-- end seller block -->
+			<?php } ?>
+			]]></add>
+		</operation>
+		
+		<!-- product attribute tab headers -->
+		<operation>
+			<search position="after"><![CDATA[
+				<li class="active"><a href="#tab-description" data-toggle="tab"><?php echo $tab_description; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+				<?php foreach ($ms_product_attributes as $attribute) { ?>
+					<?php if(is_array($attribute['values']) && implode($attribute['values']) != '' && (isset($attribute['tab_display']) && $attribute['tab_display'])) { ?>
+					<li><a data-toggle="tab" href="#tab-attribute-<?php echo $attribute['attribute_id']; ?>"><?php echo $attribute['name'] ?></a></li>
+					<?php } ?>
+				<?php } ?>
+			]]></add>
+		</operation>
+		
+		<!-- product attribute tab contents -->
+		<operation>
+			<search position="before" offset="1"><![CDATA[
+				<div class="tab-pane" id="tab-specification">
+			]]></search>
+			<add><![CDATA[
+				<?php foreach ($ms_product_attributes as $attribute) { ?>
+					<?php if(isset($attribute['tab_display']) && $attribute['tab_display']) { ?>
+					<div id="tab-attribute-<?php echo $attribute['attribute_id']; ?>" class="tab-pane">
+						<?php echo implode(',',$attribute['values']); ?>
+					</div>
+					<?php } ?>
+				<?php } ?>
+			]]></add>
+		</operation>
+
+		<!-- display attributes multimerch-style -->
+		<operation>
+			<search position="after" error="skip"><![CDATA[
+				<li><?php echo $text_stock; ?> <?php echo $stock; ?></li>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('msconf_attribute_display') != 1) { ?>
+				<?php foreach ($ms_product_attributes as $attribute) { ?>
+					<?php if(is_array($attribute['values']) && implode($attribute['values']) != '' && (!isset($attribute['tab_display']) || !$attribute['tab_display'])) { ?>
+						<?php if ($attribute['attribute_type'] == MsAttribute::TYPE_IMAGE) { ?>
+							<?php $attribute['image'] = (!empty($attribute['image']) ? $this->MsLoader->MsFile->resizeImage($attribute['image'], 50, 50) : $this->MsLoader->MsFile->resizeImage('no_image.png', 50, 50)); ?>
+							<li><?php echo $attribute['name']; ?>: <?php echo implode(',',$attribute['values']); ?></li>
+							<img src="<?php echo $attribute['image']; ?>" style="vertical-align: middle; padding: 1px; border: 1px solid #DDDDDD; margin-bottom: 10px" />
+							<br />
+						<?php } else { ?>
+							<li><?php echo $attribute['name']; ?>:</span> <?php echo implode(',',$attribute['values']); ?></li>
+						<?php } ?>
+					<?php } ?>
+				<?php } ?>
+				<?php } ?>
+			]]></add>
+		</operation>
+
+		<!-- display attributes opencart-style -->
+		<operation>
+			<search position="replace" error="skip"><![CDATA[
+				<?php if ($attribute_groups) { ?>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('msconf_attribute_display') != 0 && $attribute_groups) { ?>
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+			if ($product_info) {
+			]]></search>
+			<add><![CDATA[
+			$this->document->addScript('catalog/view/javascript/dialog-sellercontact.js');
+			$this->document->addStyle('catalog/view/theme/' . $this->config->get('config_template') . '/stylesheet/multiseller.css');
+			$data = array_merge($data, $this->load->language('multiseller/multiseller'));
+			$this->load->model('localisation/country');
+			$this->load->model('localisation/zone');
+			$this->load->model('tool/image');
+
+			$seller_id = $this->MsLoader->MsProduct->getSellerId($this->request->get['product_id']);
+			$seller = $this->MsLoader->MsSeller->getSeller($seller_id);
+
+			if (!$seller) {
+				$data['seller'] = NULL;
+			} else {
+				$data['seller'] = array();
+				if (!empty($seller['ms.avatar'])) {
+					$data['seller']['thumb'] = $this->MsLoader->MsFile->resizeImage($seller['ms.avatar'], $this->config->get('msconf_seller_avatar_product_page_image_width'), $this->config->get('msconf_seller_avatar_product_page_image_height'));
+				} else {
+					$data['seller']['thumb'] = $this->MsLoader->MsFile->resizeImage('ms_no_image.jpg', $this->config->get('msconf_seller_avatar_product_page_image_width'), $this->config->get('msconf_seller_avatar_product_page_image_height'));
+				}
+					
+				$country = $this->model_localisation_country->getCountry($seller['ms.country_id']);
+				
+				if (!empty($country)) {
+					$data['seller']['country'] = $country['name'];
+				} else {
+					$data['seller']['country'] = NULL;
+				}
+				
+				$zone = $this->model_localisation_zone->getZone($seller['ms.zone_id']);
+				
+				if (!empty($zone)) {			
+					$data['seller']['zone'] = $zone['name'];
+				} else {
+					$data['seller']['zone'] = NULL;
+				}
+				
+				if (!empty($seller['ms.company'])) {
+					$data['seller']['company'] = $seller['ms.company'];
+				} else {
+					$data['seller']['company'] = NULL;
+				}
+				
+				if (!empty($seller['ms.website'])) {
+					$data['seller']['website'] = $seller['ms.website'];
+				} else {
+					$data['seller']['website'] = NULL;
+				}
+				
+				$data['seller']['nickname'] = $seller['ms.nickname'];
+				$data['seller']['seller_id'] = $seller['seller_id'];
+				 
+				$data['seller']['href'] = $this->url->link('seller/catalog-seller/profile', 'seller_id=' . $seller['seller_id']);
+				
+				$data['seller']['total_sales'] = $this->MsLoader->MsSeller->getSalesForSeller($seller['seller_id']);
+				$data['seller']['total_products'] = $this->MsLoader->MsProduct->getTotalProducts(array(
+					'seller_id' => $seller['seller_id'],
+					'product_status' => array(MsProduct::STATUS_ACTIVE)
+				));
+
+				$data['contactForm'] = $this->MsLoader->MsHelper->renderPmDialog($data);
+			}
+
+			$data['ms_product_attributes'] = $this->MsLoader->MsAttribute->getProductAttributes($this->request->get['product_id'], array('multilang' => 0, 'attribute_type'=> array(MsAttribute::TYPE_TEXT, MsAttribute::TYPE_TEXTAREA, MsAttribute::TYPE_DATE, MsAttribute::TYPE_DATETIME, MsAttribute::TYPE_TIME), 'mavd.language_id' => 0));
+			$data['ms_product_attributes'] = array_merge($data['ms_product_attributes'], $this->MsLoader->MsAttribute->getProductAttributes($this->request->get['product_id'], (array())));
+			]]></add>
+		</operation>
+	</file>
+</modification>

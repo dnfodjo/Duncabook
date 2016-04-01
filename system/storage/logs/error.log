@@ -1,0 +1,216 @@
+2015-12-09 17:23:04 - PHP Notice:  Undefined variable: sellers in /home2/duncaboo/public_html/admin/view/template/multiseller/payment-form.tpl on line 36
+2015-12-09 17:23:04 - PHP Warning:  Invalid argument supplied for foreach() in /home2/duncaboo/public_html/admin/view/template/multiseller/payment-form.tpl on line 36
+2015-12-09 17:23:04 - PHP Notice:  Undefined variable: sellers in /home2/duncaboo/public_html/admin/view/template/multiseller/payment-form.tpl on line 53
+2015-12-09 17:23:04 - PHP Warning:  Invalid argument supplied for foreach() in /home2/duncaboo/public_html/admin/view/template/multiseller/payment-form.tpl on line 53
+2015-12-09 22:37:33 - PHP Notice:  Undefined index: sort_order in /home2/duncaboo/public_html/admin/model/design/banner.php on line 12
+2015-12-09 22:37:33 - PHP Warning:  Cannot modify header information - headers already sent by (output started at /home2/duncaboo/public_html/admin/index.php:84) in /home2/duncaboo/public_html/system/library/response.php on line 12
+2015-12-09 22:38:15 - PHP Notice:  Undefined index: sort_order in /home2/duncaboo/public_html/admin/model/design/banner.php on line 12
+2015-12-09 22:38:15 - PHP Warning:  Cannot modify header information - headers already sent by (output started at /home2/duncaboo/public_html/admin/index.php:84) in /home2/duncaboo/public_html/system/library/response.php on line 12
+2015-12-09 23:15:14 - PHP Notice:  Undefined index: sort_order in /home2/duncaboo/public_html/admin/model/design/banner.php on line 37
+2015-12-09 23:15:14 - PHP Warning:  Cannot modify header information - headers already sent by (output started at /home2/duncaboo/public_html/admin/index.php:84) in /home2/duncaboo/public_html/system/library/response.php on line 12
+2015-12-09 23:19:36 - PHP Notice:  Undefined index: sort_order in /home2/duncaboo/public_html/admin/model/design/banner.php on line 37
+2015-12-09 23:19:36 - PHP Warning:  Cannot modify header information - headers already sent by (output started at /home2/duncaboo/public_html/admin/index.php:84) in /home2/duncaboo/public_html/system/library/response.php on line 12
+2015-12-10 0:32:16 - PHP Notice:  Undefined index: sort_order in /home2/duncaboo/public_html/admin/model/design/banner.php on line 37
+2015-12-10 0:32:16 - PHP Warning:  Cannot modify header information - headers already sent by (output started at /home2/duncaboo/public_html/admin/index.php:84) in /home2/duncaboo/public_html/system/library/response.php on line 12
+2015-12-10 3:41:45 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/system/library/msproduct.php on line 64
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 308
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 319
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:41:46 - PHP Warning:  in_array() expects parameter 2 to be array, null given in /home2/duncaboo/public_html/admin/view/template/multiseller/settings.tpl on line 587
+2015-12-10 3:50:38 - PHP Notice:  Undefined variable: vqmod_log in /home2/duncaboo/public_html/admin/view/template/multiseller/debug.tpl on line 52
+2015-12-10 4:21:56 - PHP Notice:  Undefined variable: vqmod_log in /home2/duncaboo/public_html/admin/view/template/multiseller/debug.tpl on line 52
+2015-12-10 19:26:49 - PHP Notice:  Undefined variable: vqmod_log in /home2/duncaboo/public_html/admin/view/template/multiseller/debug.tpl on line 52
+2015-12-11 11:29:57 - PP_STANDARD :: IPN REQUEST: cmd=_notify-validate&mc_gross=0.30&invoice=5+-+kenneth+duncan&auth_exp=10%3A29%3A47+Jan+10%2C+2016+PST&protection_eligibility=Ineligible&item_number1=The+Histories+Reissue+Edition&payer_id=YUSG7CKNB5UNE&tax=0.00&payment_date=10%3A29%3A47+Dec+11%2C+2015+PST&payment_status=Pending&charset=windows-1252&mc_shipping=0.00&mc_handling=0.00&first_name=ken&transaction_entity=auth&notify_version=3.8&custom=5&payer_status=verified&business=duncabook%40earthlink.net&num_cart_items=1&mc_handling1=0.00&verify_sign=AC7SXT6sCjXTdjnVZEQxxXg1oEwoAiLT7qIqfDEEOGSXqm2P.tJcwCic&payer_email=kjdb%40earthlink.net&mc_shipping1=0.00&tax1=0.00&parent_txn_id=&txn_id=98W63679B73831112&payment_type=instant&remaining_settle=10&auth_id=98W63679B73831112&last_name=duncan&item_name1=The+Histories+Reissue+Edition&receiver_email=duncabook%40earthlink.net&auth_amount=0.30&quantity1=1&receiver_id=U8R46H8JE9PG4&pending_reason=authorization&txn_type=cart&mc_gross_1=0.30&mc_currency=USD&residence_country=US&transaction_subject=5&payment_gross=0.30&auth_status=Pending&ipn_track_id=5020e73a2a48
+2015-12-11 11:29:57 - PP_STANDARD :: IPN RESPONSE: VERIFIED
+2015-12-11 18:37:25 - PHP Notice:  Undefined variable: vqmod_log in /home2/duncaboo/public_html/admin/view/template/multiseller/debug.tpl on line 52
+2015-12-11 16:11:06 - PP_STANDARD :: IPN REQUEST: cmd=_notify-validate&mc_gross=0.30&invoice=5+-+kenneth+duncan&auth_exp=10%3A29%3A47+Jan+10%2C+2016+PST&protection_eligibility=Ineligible&item_number1=The+Histories+Reissue+Edition&payer_id=YUSG7CKNB5UNE&tax=0.00&payment_date=15%3A11%3A00+Dec+11%2C+2015+PST&payment_status=Completed&charset=windows-1252&mc_shipping=0.00&mc_handling=0.00&first_name=ken&transaction_entity=payment&mc_fee=0.30&notify_version=3.8&custom=5&payer_status=verified&business=duncabook%40earthlink.net&num_cart_items=1&verify_sign=AaJHGLAdDj9X3X5RoVTTz4UWvpzEAmPQsNim4TCnLVdznrExjrdKkPJI&payer_email=kjdb%40earthlink.net&parent_txn_id=98W63679B73831112&txn_id=20F407741A797315A&payment_type=instant&remaining_settle=0&auth_id=98W63679B73831112&last_name=duncan&item_name1=The+Histories+Reissue+Edition&receiver_email=duncabook%40earthlink.net&auth_amount=0.30&payment_fee=0.30&quantity1=1&receiver_id=U8R46H8JE9PG4&txn_type=cart&mc_gross_1=0.30&mc_currency=USD&residence_country=US&transaction_subject=&payment_gross=0.30&auth_status=Completed&ipn_track_id=5800a19adddae
+2015-12-11 16:11:06 - PP_STANDARD :: IPN RESPONSE: VERIFIED
+2015-12-12 0:42:14 - PHP Notice:  Undefined variable: vqmod_log in /home2/duncaboo/public_html/admin/view/template/multiseller/debug.tpl on line 52
+2015-12-12 0:43:06 - PHP Notice:  Undefined variable: vqmod_log in /home2/duncaboo/public_html/admin/view/template/multiseller/debug.tpl on line 52
+2015-12-11 18:50:20 - PHP Notice:  Error: Unknown column 'ms.shipping_type' in 'field list'<br />Error No: 1054<br />SELECT
+					SQL_CALC_FOUND_ROWS CONCAT(c.firstname, ' ', c.lastname) as 'c.name',
+					c.email as 'c.email',
+					ms.seller_id as 'seller_id',
+					ms.nickname as 'ms.nickname',
+					ms.company as 'ms.company',
+					ms.website as 'ms.website',
+					ms.seller_status as 'ms.seller_status',
+					ms.seller_approved as 'ms.seller_approved',
+					ms.date_created as 'ms.date_created',
+					ms.avatar as 'ms.avatar',
+					ms.banner as 'banner',
+					ms.country_id as 'ms.country_id',
+					ms.zone_id as 'ms.zone_id',
+					ms.description as 'ms.description',
+					ms.paypal as 'ms.paypal',
+
+				ms.shipping_type as 'ms.shipping_type',
+			
+					IFNULL(SUM(mp.number_sold), 0) as 'total_sales'
+				FROM `oc_customer` c
+				INNER JOIN `oc_ms_seller` ms
+					ON (c.customer_id = ms.seller_id)
+				LEFT JOIN `oc_ms_product` mp
+					ON (c.customer_id = mp.seller_id)
+				WHERE 1 = 1  AND seller_status IN  (1) GROUP BY ms.seller_id HAVING 1 = 1  ORDER BY total_sales DESC LIMIT 0, 5 in /home2/duncaboo/public_html/system/library/db/mysqli.php on line 41
+2015-12-11 18:50:20 - PHP Notice:  Trying to get property of non-object in /home2/duncaboo/public_html/vqmod/vqcache/vq2-system_library_msseller.php on line 421
+2015-12-11 18:50:20 - PHP Notice:  Trying to get property of non-object in /home2/duncaboo/public_html/vqmod/vqcache/vq2-system_library_msseller.php on line 423
+2015-12-11 18:50:20 - PHP Warning:  Invalid argument supplied for foreach() in /home2/duncaboo/public_html/catalog/controller/module/multimerch_topsellers.php on line 32
+2015-12-11 20:20:36 - PHP Notice:  Undefined variable: shipping_type in /home2/duncaboo/public_html/catalog/view/theme/default/template/multiseller/account-product-form.tpl on line 554
+2015-12-11 20:20:36 - PHP Notice:  Undefined variable: shipping_methods in /home2/duncaboo/public_html/catalog/view/theme/default/template/multiseller/account-product-form.tpl on line 581
+2015-12-11 20:20:36 - PHP Warning:  Invalid argument supplied for foreach() in /home2/duncaboo/public_html/catalog/view/theme/default/template/multiseller/account-product-form.tpl on line 581
+2015-12-11 20:22:08 - PHP Notice:  Undefined variable: shipping_type in /home2/duncaboo/public_html/catalog/view/theme/default/template/multiseller/account-product-form.tpl on line 554
+2015-12-11 20:22:08 - PHP Notice:  Undefined variable: shipping_methods in /home2/duncaboo/public_html/catalog/view/theme/default/template/multiseller/account-product-form.tpl on line 581
+2015-12-11 20:22:08 - PHP Warning:  Invalid argument supplied for foreach() in /home2/duncaboo/public_html/catalog/view/theme/default/template/multiseller/account-product-form.tpl on line 581
+2015-12-11 20:23:36 - PHP Notice:  Undefined variable: shipping_type in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-product-form.tpl on line 559
+2015-12-11 20:23:36 - PHP Notice:  Undefined variable: shipping_methods in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-product-form.tpl on line 586
+2015-12-11 20:23:36 - PHP Warning:  Invalid argument supplied for foreach() in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-product-form.tpl on line 586
+2015-12-11 20:26:13 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:26:13 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:26:13 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:26:13 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 20:32:39 - PHP Notice:  Undefined variable: shipping_type in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-product-form.tpl on line 488
+2015-12-11 20:32:39 - PHP Notice:  Undefined variable: shipping_methods in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-product-form.tpl on line 516
+2015-12-11 20:32:39 - PHP Warning:  Invalid argument supplied for foreach() in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-product-form.tpl on line 516
+2015-12-11 20:32:39 - PHP Notice:  Undefined variable: geo_zones in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-product-form.tpl on line 532
+2015-12-11 20:32:39 - PHP Warning:  Invalid argument supplied for foreach() in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-product-form.tpl on line 532
+2015-12-11 20:35:02 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:35:02 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:35:02 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:35:02 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 20:40:42 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:40:42 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:40:42 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:40:42 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 20:40:51 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:40:51 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:40:51 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:40:51 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 20:45:19 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:45:19 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:45:19 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:45:19 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 20:47:56 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:47:56 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:47:56 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:48:54 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:48:54 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:48:54 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:48:54 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 20:49:44 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:49:44 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:49:44 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:49:44 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 20:50:27 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:50:27 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:50:27 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 20:51:20 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 20:51:20 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 20:51:20 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 21:00:26 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 21:00:26 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 21:00:26 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 21:07:54 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 21:07:54 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 21:07:54 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 21:07:54 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 21:08:24 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 21:08:24 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 21:08:24 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 21:08:24 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 21:10:23 - PHP Notice:  Undefined index: shipping_length in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 686
+2015-12-11 21:10:23 - PHP Notice:  Undefined index: shipping_width in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 690
+2015-12-11 21:10:23 - PHP Notice:  Undefined index: shipping_height in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 694
+2015-12-11 21:11:34 - PHP Notice:  Undefined index: shipping_weight in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_controller_seller_account-product.php on line 698
+2015-12-11 21:28:13 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:28:47 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:29:03 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:33:19 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:34:46 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:37:27 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:44:06 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:48:58 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:48:58 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:49:09 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:49:09 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:49:15 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-11 21:49:15 - PHP Notice:  Undefined index: geo_zone_id in /home2/duncaboo/public_html/system/library/msshipping.php on line 168
+2015-12-12 16:23:22 - PHP Notice:  Undefined index: key in /home2/duncaboo/public_html/catalog/controller/checkout/multiseller_shipping_method.php on line 376
+2015-12-12 16:23:22 - PHP Notice:  Undefined index: shipping_method in /home2/duncaboo/public_html/catalog/controller/checkout/multiseller_shipping_method.php on line 419
+2015-12-12 16:23:22 - PHP Notice:  Undefined index: shipping_cost_new in /home2/duncaboo/public_html/catalog/controller/checkout/multiseller_shipping_method.php on line 421
+2015-12-12 16:23:22 - PHP Notice:  Undefined index: shipping_method_name in /home2/duncaboo/public_html/catalog/controller/checkout/multiseller_shipping_method.php on line 422
+2015-12-13 18:30:00 - PHP Notice:  Undefined variable: register_seller in /home2/duncaboo/public_html/catalog/view/theme/default/template/account/login.tpl on line 29
+2015-12-13 18:30:06 - PHP Notice:  Undefined variable: register_seller in /home2/duncaboo/public_html/catalog/view/theme/default/template/account/login.tpl on line 29
+2015-12-13 19:39:19 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:39:19 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:40:29 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:40:29 - PHP Notice:  Undefined offset: 1 in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:40:35 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:40:35 - PHP Notice:  Undefined offset: 1 in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:45:00 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:45:00 - PHP Notice:  Undefined offset: 1 in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:46:58 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:46:58 - PHP Notice:  Undefined offset: 1 in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:47:12 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:47:12 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:47:12 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:47:12 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:47:23 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:47:23 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:47:23 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-13 19:47:23 - PHP Notice:  Undefined variable: country in /home2/duncaboo/public_html/vqmod/vqcache/vq2-catalog_view_theme_default_template_multiseller_account-profile.tpl on line 74
+2015-12-16 20:21:05 - PHP Notice:  Undefined offset: 0 in /home2/duncaboo/public_html/vqmod/vqcache/vq2-admin_controller_sale_order.php on line 1561
+2015-12-18 5:10:39 - PHP Notice:  Undefined offset: 0 in /home2/duncaboo/public_html/vqmod/vqcache/vq2-admin_controller_sale_order.php on line 1561
+2016-01-04 7:08:24 - PHP Notice:  Undefined offset: 0 in /home2/duncaboo/public_html/vqmod/vqcache/vq2-admin_controller_sale_order.php on line 1561
+2016-01-06 7:50:51 - PHP Notice:  Undefined index: key in /home2/duncaboo/public_html/catalog/controller/checkout/multiseller_shipping_method.php on line 376
+2016-01-06 7:50:51 - PHP Notice:  Undefined index: shipping_method in /home2/duncaboo/public_html/catalog/controller/checkout/multiseller_shipping_method.php on line 419
+2016-01-06 7:50:51 - PHP Notice:  Undefined index: shipping_cost_new in /home2/duncaboo/public_html/catalog/controller/checkout/multiseller_shipping_method.php on line 421
+2016-01-06 7:50:51 - PHP Notice:  Undefined index: shipping_method_name in /home2/duncaboo/public_html/catalog/controller/checkout/multiseller_shipping_method.php on line 422
+2016-01-11 20:26:50 - PHP Notice:  Undefined index: seller in /home2/duncaboo/public_html/catalog/controller/account/register-seller.php on line 50
+2016-01-11 20:26:50 - PHP Notice:  Undefined index: seller in /home2/duncaboo/public_html/catalog/controller/account/register-seller.php on line 54
+2016-01-11 20:26:50 - PHP Notice:  Undefined index: seller in /home2/duncaboo/public_html/catalog/controller/account/register-seller.php on line 58
+2016-01-11 20:26:50 - PHP Notice:  Undefined index: seller in /home2/duncaboo/public_html/catalog/controller/account/register-seller.php on line 58
+2016-01-11 20:26:50 - PHP Notice:  Undefined index: seller in /home2/duncaboo/public_html/catalog/controller/account/register-seller.php on line 66
+2016-01-11 20:26:50 - PHP Notice:  Undefined index: seller in /home2/duncaboo/public_html/catalog/controller/account/register-seller.php on line 70
+2016-01-11 20:26:50 - PHP Notice:  Undefined index: seller in /home2/duncaboo/public_html/catalog/controller/account/register-seller.php on line 70
+2016-01-16 20:39:25 - PHP Warning:  unlink(/home2/duncaboo/public_html/system/storage/cache/cache.currency.1452999256): No such file or directory in /home2/duncaboo/public_html/system/library/cache/file.php on line 17
+2016-03-03 9:47:38 - PHP Warning:  unlink(/home2/duncaboo/public_html/system/storage/cache/cache.currency.1457005063): No such file or directory in /home2/duncaboo/public_html/system/library/cache/file.php on line 17
+2016-03-03 9:47:38 - PHP Warning:  unlink(/home2/duncaboo/public_html/system/storage/cache/cache.language.1457005063): No such file or directory in /home2/duncaboo/public_html/system/library/cache/file.php on line 17

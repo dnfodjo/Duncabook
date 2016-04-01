@@ -1,0 +1,81 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Shipping Edition - Menus</id>
+	<!-- * Add language file to the header * -->
+	<file name="catalog/controller/common/header.php">
+		<operation error="log">
+			<search position="after"><![CDATA[
+				public function index() {
+			]]></search>
+			<add><![CDATA[
+				$data = array_merge(isset($data) ? $data : array(), $this->load->language('multiseller/multiseller_physical'));
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Add Shipping Settings link in the controller * -->
+	<file name="catalog/controller/account/account.php">
+		<operation>
+			<search position="after"><![CDATA[
+				public function index() {
+			]]></search>
+			<add><![CDATA[
+				$data = array_merge(isset($data) ? $data : array(), $this->load->language('multiseller/multiseller_physical'));
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Add Shipping Settings link in the view file * -->
+	<file name="catalog/view/theme/&themeFolder;/template/account/account.tpl">
+		<operation>
+			<search position="after" offset="3"><![CDATA[
+				<?php echo $ms_account_products; ?>
+			]]></search>
+			<add><![CDATA[
+			<?php if ($ms_seller_created && $this->MsLoader->MsSeller->getStatus($this->customer->getId()) == MsSeller::STATUS_ACTIVE) { ?>
+				<?php if ($this->config->get('msconf_enable_shipping')) { ?>
+					<li>
+						<a href="<?php echo $this->url->link('seller/account-shipping-settings', '', 'SSL'); ?>">
+                            <?php if($this->config->get('msconf_graphical_sellermenu')) { ?>
+                                <img src="catalog/view/theme/<?php echo $this->config->get('config_template'); ?>/image/ms-woodbox-96.png" />
+                            <?php } ?>
+                            <?php echo $ms_account_shipping_settings; ?>
+					    </a>
+					</li>
+				<?php } ?>
+			<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Add Shipping Settings link in the controller for sidebar * -->
+	<file name="catalog/controller/module/account.php">
+		<operation>
+			<search position="after"><![CDATA[
+				public function index() {
+			]]></search>
+			<add><![CDATA[
+				$data = array_merge(isset($data) ? $data : array(), $this->load->language('multiseller/multiseller_physical'));
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Add Shipping Settings link to the sidebar * -->
+	<file name="catalog/view/theme/&themeFolder;/template/module/account.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<a class="list-group-item" href= "<?php echo $this->url->link('seller/account-product', '', 'SSL'); ?>"><?php echo $ms_account_products; ?></a>
+			]]></search>
+			<add><![CDATA[
+			<?php if ($ms_seller_created && $this->MsLoader->MsSeller->getStatus($this->customer->getId()) == MsSeller::STATUS_ACTIVE) { ?>
+				<?php if ($this->config->get('msconf_enable_shipping') > 0) { ?>
+				    <a class="list-group-item" href= "<?php echo $this->url->link('seller/account-shipping-settings', '', 'SSL'); ?>"><?php echo $ms_account_shipping_settings; ?></a>
+				<?php } ?>
+			<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+</modification>

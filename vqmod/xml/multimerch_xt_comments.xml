@@ -1,0 +1,237 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Comments</id>
+	<author>http://multimerch.com/</author>
+
+	<!-- delete product comments -->
+	<file name="&adminFolder;/model/catalog/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+				public function deleteProduct($product_id) {
+			]]></search>
+			<add><![CDATA[
+				$this->db->query("DELETE FROM " . DB_PREFIX . "ms_comments WHERE product_id = '" . (int)$product_id . "'");
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="system/library/msproduct.php">
+		<operation>
+			<search position="after"><![CDATA[
+				public function deleteProduct($product_id) {
+			]]></search>
+			<add><![CDATA[
+				$this->db->query("DELETE FROM " . DB_PREFIX . "ms_comments WHERE product_id = '" . (int)$product_id . "'");
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- add comment link to multimerch menu -->
+	<file name="&adminFolder;/view/template/common/menu.tpl">
+		<operation>
+			<search position="before"><![CDATA[
+				<li><a href="<?php echo $this->url->link('module/multiseller', 'token=' . $this->session->data['token'], 'SSL'); ?>"><?php echo $ms_menu_settings; ?></a></li>
+			]]></search>
+			<add><![CDATA[
+				<li><a href="<?php echo $this->url->link('multiseller/comment', 'token=' . $this->session->data['token'], 'SSL'); ?>"><?php echo $ms_menu_comments; ?></a></li>
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="&adminFolder;/controller/common/menu.php">
+		<operation>
+			<search position="after"><![CDATA[
+			public function index() {
+			]]></search>
+			<add><![CDATA[
+			$data = array_merge(isset($data) ? $data : array(), $this->load->language('module/multimerch_comments'));
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- display comments on product page -->
+	<file name="catalog/view/theme/&themeFolder;/template/product/product.tpl">
+		<operation>
+			<search position="before" offset="2"><![CDATA[
+				<div class="tab-pane active" id="tab-description"><?php echo $description; ?></div>
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('mscomm_comments_enable')) { ?>
+					<li><a href="#tab-comments" data-toggle="tab"><?php echo $tab_comments; ?></a></li>
+				<?php } ?>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[
+				<div class="tab-content">
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('mscomm_comments_enable')) { ?>
+				<div class="tab-pane" id="tab-comments">
+					<div class="pcComments"></div>
+					<div class="pcForm"></div>
+				</div>
+				<?php } ?>
+			]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+				$('.date').datetimepicker({
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('mscomm_comments_enable')) { ?>
+					$('#tab-comments .pcForm').load($('base').attr('href') + 'index.php?route=module/multimerch_comments/renderForm&product_id=<?php echo $product_id; ?>');
+					$('#tab-comments .pcComments').load($('base').attr('href') + 'index.php?route=module/multimerch_comments/renderComments&product_id=<?php echo $product_id; ?>');
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+				$data['tab_description'] = $this->language->get('tab_description');
+			]]></search>
+			<add><![CDATA[
+				if ($this->config->get('mscomm_comments_enable')) {
+					$this->language->load('module/multimerch_comments');
+					$data['tab_comments'] = sprintf($this->language->get('ms_comments_tab_comments'), $this->MsLoader->MsComments->getTotalComments(array(
+						'product_id' => $this->request->get['product_id'],
+						'displayed' => 1
+					)));
+
+					$this->document->addScript('catalog/view/javascript/multimerch_comments.js');
+					$this->MsLoader->MsHelper->addStyle('multimerch_comments');
+				}
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- display comments on seller profile page -->
+	<file name="catalog/controller/seller/catalog-seller.php">
+		<operation>
+			<search position="after"><![CDATA[
+				public function profile() {
+			]]></search>
+			<add><![CDATA[
+				if ($this->config->get('mscomm_seller_comments_enable')) {
+					$this->data = array_merge($this->data, $this->load->language('module/multimerch_comments'));
+					$this->document->addScript('catalog/view/javascript/multimerch_comments.js');
+					$this->MsLoader->MsHelper->addStyle('multimerch_comments');
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/catalog-seller-profile.tpl">
+		<operation>
+			<search position="after"><![CDATA[
+				<!-- end products -->
+			]]></search>
+			<add><![CDATA[
+				<?php if ($this->config->get('mscomm_seller_comments_enable')) { ?>
+				<hr />
+                <h3><?php echo $ms_catalog_seller_profile_tab_comments; ?></h3>
+                <div class="row" id="cmContainer">
+					<script type="text/javascript">
+						$(function(){
+							$('#cmContainer .pcForm').load('index.php?route=module/multimerch_comments/renderForm&seller_id=<?php echo $seller_id; ?>>');
+							$('#cmContainer .pcComments').load('index.php?route=module/multimerch_comments/renderComments&seller_id=<?php echo $seller_id; ?>');
+						});
+					</script>
+	                <div class="col-lg-12" id="tab-comments">
+                        <div class="pcComments"></div>
+                        <div class="pcForm"></div>
+					</div>
+				</div>
+				<?php } ?>
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- display comments in seller dashboard -->
+	<file name="catalog/controller/seller/account-dashboard.php">
+		<operation>
+			<search position="before"><![CDATA[
+				$this->data['link_back'] = $this->url->link('account/account', '', 'SSL');
+			]]></search>
+			<add><![CDATA[
+				$this->data = array_merge($this->load->language('module/multimerch_comments'), $this->data);
+			
+				$comments = $this->MsLoader->MsComments->getSellerProductComments(
+					array(
+						'seller_id' => $seller_id,
+						'displayed' => 1
+					),
+					array(
+						'order_by'  => 'create_time',
+						'order_way' => 'DESC',
+						'offset' => 0,
+						'limit' => 5
+					)
+				);
+		
+				foreach ($comments as $result) {
+					$product = $this->MsLoader->MsProduct->getProduct($result['product_id']);
+					if (!$this->config->get('msconf_hide_customer_email')) {
+						$customer_name = $result['name'];
+					} else {
+						$customer_name = "{$result['name']} ({$result['email']})";
+					}
+					$this->data['comments'][] = array(
+						'name' => $customer_name,
+						'product_id' => $result['product_id'],
+						'product_name' => $product['languages'][$this->config->get('config_language_id')]['name'],
+						'comment' => (mb_strlen($result['comment']) > 80 ? mb_substr($result['comment'], 0, 80) . '...' : $result['comment']),
+						'date_created' => date($this->language->get('date_format_short'), $result['create_time']),
+					);
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/&themeFolder;/template/multiseller/account-dashboard.tpl">
+		<operation>
+			<search position="before"><![CDATA[
+				<div class="buttons">
+			]]></search>
+			<add><![CDATA[
+				<br />
+				<h2><?php echo $ms_account_dashboard_comments; ?></h2>
+				<table class="list comments">
+					<thead>
+						<tr>
+							<td class="name"><?php echo $ms_account_comments_name; ?></a></td>
+							<td class="product"><?php echo $ms_account_comments_product; ?></a></td>
+							<td class="comment"><?php echo $ms_account_comments_comment; ?></a></td>
+							<td class="date"><?php echo $ms_date; ?></a></td>
+						</tr>
+					</thead>
+		
+					<tbody>
+						<?php if (isset($comments) && $comments) { ?>
+						<?php foreach ($comments as $comment) { ?>
+						<tr>
+							<td><?php echo $comment['name']; ?></td>
+							<td><a href="<?php echo $this->url->link('product/product', 'product_id=' . $comment['product_id'], 'SSL'); ?>"><?php echo $comment['product_name']; ?></a></td>
+							<td><?php echo $comment['comment']; ?></td>
+							<td><?php echo $comment['date_created']; ?></td>
+						</tr>
+						<?php } ?>
+						<?php } else { ?>
+						<tr>
+							<td class="center" colspan="4"><?php echo $ms_account_comments_nocomments; ?></td>
+						</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			]]></add>
+		</operation>
+	</file>
+</modification>

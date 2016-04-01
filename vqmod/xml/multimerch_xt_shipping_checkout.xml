@@ -1,0 +1,474 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modification [
+<!ENTITY adminFolder "admin">
+<!ENTITY themeFolder "default">
+]>
+<modification>
+	<id>MultiMerch Shipping Edition - Checkout</id>
+	<!-- **************************************************************************** -->
+	<!-- * Change the controller for shipping method selection (Step 4 of checkout) * -->
+	<!-- **************************************************************************** -->
+	
+	<!-- * Edit view file * -->
+	<file name="catalog/view/theme/&themeFolder;/template/checkout/checkout.tpl">
+		<!-- * Replace with new checkout * -->
+		<operation>
+			<search position="replace"><![CDATA[checkout/shipping_method]]></search>
+			<add><![CDATA[checkout/multiseller_shipping_method]]></add>
+		</operation>
+		
+		<!-- * Send additional data through POST * -->
+		<operation>
+			<search position="replace"><![CDATA[
+				data: $('#collapse-shipping-method input[type=\'radio\']:checked, #collapse-shipping-method textarea'),
+			]]></search>
+			<add><![CDATA[
+			data: $('#collapse-shipping-method input[type=\'radio\']:checked, #collapse-shipping-method textarea, #collapse-shipping-method input[type=\'hidden\']'),
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Add file with styles in controller file * -->
+	<file name="catalog/controller/checkout/checkout.php">
+		<operation>
+			<search position="after"><![CDATA[
+				public function index() {
+			]]></search>
+			<add><![CDATA[
+				$this->MsLoader->MsHelper->addStyle('multiseller_physical');
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- ********************************************************* -->
+	<!-- * Change the confirm checkout page (Step 6 of checkout) * -->
+	<!-- ********************************************************* -->
+	
+	<!-- * Edit the confirm checkout controller * -->
+	<file name="catalog/controller/checkout/confirm.php">
+		<!-- * Add language file * -->
+		<operation>
+			<search position="after"><![CDATA[
+				$this->load->language('checkout/checkout');
+			]]></search>
+			<add><![CDATA[
+			    $data = array_merge(isset($data) ? $data : array(), $this->load->language('multiseller/multiseller_physical'));
+			]]></add>
+		</operation>
+
+        <!-- * Add shipping method data to addOrder default * -->
+        <operation>
+			<search position="after" index="1" offset="1"><![CDATA[
+				$order_data['shipping_code'] = '';
+			]]></search>
+			<add><![CDATA[
+			    if (isset($this->session->data['shipping_methods'])) {
+					foreach($this->session->data['shipping_methods'] as $mth) {
+						$order_data['shipping_method'] .= isset($mth['name']) ? $mth['name'] : '';
+						$order_data['shipping_code'] = 'MM';
+					}
+				}
+
+                if (isset($this->session->data['seller_shipping_methods'])) {
+					foreach($this->session->data['seller_shipping_methods'] as $mth) {
+						$order_data['shipping_method'] .= isset($mth['name']) ? $mth['name'] : '';
+						$order_data['shipping_code'] = 'MM';
+					}
+				}
+			]]></add>
+		</operation>
+
+		<!-- * Add shipping method data to send it to new order * -->
+		<operation>
+			<search position="before"><![CDATA[
+				$this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
+			]]></search>
+			<add><![CDATA[
+				if (isset($this->session->data['shipping_methods'])) {
+					$order_data['shipping_methods'] = $this->session->data['shipping_methods'];
+				}
+				if (isset($this->session->data['seller_shipping_methods'])) {
+					$order_data['seller_shipping_methods'] = $this->session->data['seller_shipping_methods'];
+				}
+			]]></add>
+		</operation>
+		
+		<!-- * Add shippable parameter of the product * -->
+		<operation>
+			<search position="before"><![CDATA[
+				'product_id' => $product['product_id'],
+			]]></search>
+			<add><![CDATA[
+				'shippable' => $product['shipping'],
+			]]></add>
+		</operation>
+		
+		<!-- * Remove validation for single shipping method * -->
+		<operation>
+			<search position="replace"><![CDATA[
+				if (!isset($this->session->data['shipping_method'])) {
+			]]></search>
+			<add><![CDATA[
+				if (0) {
+			]]></add>
+		</operation>
+		
+		<!-- Get product seller and shipping price !-->
+		<operation>
+			<search position="after"><![CDATA[
+				foreach ($this->cart->getProducts() as $product) {
+			]]></search>
+			<add><![CDATA[
+				$seller = $this->MsLoader->MsProduct->getSellerId($product['product_id']);
+				$seller_shipping_type = $this->MsLoader->MsShipping->getSellerShippingType($seller);
+				
+				if ( ($seller_shipping_type == MsShipping::SHIPPING_TYPE_FIXED) && ($product['shipping']) ) {
+					$shipping_cost = $this->session->data['shipping_methods'][$product['product_id']]['cost_unformatted'];
+				} else if ( ($seller_shipping_type == MsShipping::SHIPPING_TYPE_COMBINABLE) && ($product['shipping']) ) {
+					$shipping_cost = $this->session->data['shipping_methods'][$product['product_id']]['cost_unformatted'];
+				} else {
+					$shipping_cost = 0;
+				}
+			]]></add>
+		</operation>
+		
+		<!-- Add product shipping price for the fixed shipping products !-->
+		<operation>
+			<search position="after"><![CDATA[
+				'price'      => $product['price'],
+			]]></search>
+			<add><![CDATA[
+				'shipping_cost'      => $shipping_cost,
+			]]></add>
+		</operation>
+		
+		<!-- Add product shipping price !-->
+		<operation>
+			<search position="after"><![CDATA[
+				'price'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
+			]]></search>
+			<add><![CDATA[
+				'shipping_cost_unformatted' => $shipping_cost,
+				'shipping_cost' => $this->currency->format($shipping_cost),
+			]]></add>
+		</operation>
+		
+		<!-- Add shipping price to the total !-->
+		<operation>
+			<search position="replace"><![CDATA[
+				'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']),
+			]]></search>
+			<add><![CDATA[
+			    'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity'] + $shipping_cost),
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Edit the confirm checkout template * -->
+	<file name="catalog/view/theme/&themeFolder;/template/checkout/confirm.tpl">
+		<!-- * Add new shipping column header * -->
+		<operation>
+			<search position="after"><![CDATA[
+				<td class="text-right"><?php echo $column_price; ?></td>
+			]]></search>
+			<add><![CDATA[
+			    <td class="text-right"><?php echo $ms_shipping_totals; ?></td>
+			]]></add>
+		</operation>
+		
+		<!-- * Add new shipping column * -->
+		<operation>
+			<search position="after"><![CDATA[
+				<td class="text-right"><?php echo $product['price']; ?></td>
+			]]></search>
+			<add><![CDATA[
+			    <td class="text-right"><?php echo $product['shipping_cost']; ?></td>
+			]]></add>
+		</operation>
+
+        <!-- Fix voucher columns !-->
+        <operation error="skip">
+			<search position="after" index="1"><![CDATA[
+				<td class="text-right"><?php echo $voucher['amount']; ?></td>
+			]]></search>
+			<add><![CDATA[
+				<td class="text-right"></td>
+			]]></add>
+		</operation>
+
+		<!-- Fix colspan in total row !-->
+		<operation error="skip">
+			<search position="replace"><![CDATA[
+				colspan="4"
+			]]></search>
+			<add><![CDATA[
+				colspan="5"
+			]]></add>
+		</operation>
+	</file>
+
+	<!-- cart -->
+	<file name="catalog/view/theme/&themeFolder;/template/checkout/cart.tpl">
+		<operation>
+			<search position="replace"><![CDATA[<?php echo $shipping; ?>]]></search>
+			<add><![CDATA[]]></add>
+		</operation>
+	</file>
+
+	<!-- ********************************************* -->
+	<!-- ********************************************* -->
+	<!-- ** Add the transaction records and balance ** -->
+	<!-- ********************************************* -->
+	<!-- ********************************************* -->
+	
+	<!-- ************************************************************************************* -->
+	<!-- * Change the checkout order data model to add info and balance records for shipping * -->
+	<!-- ************************************************************************************* -->
+	
+	<!-- * Edit checkout order model file (after multiseller.xml has edited it) * -->
+	<file name="catalog/model/checkout/order.php">
+		<!-- * When creating a new order, add record to the ms_order_shipping and ms_order_product_shipping/ms_order_seller_shipping tables * -->
+		<operation>
+			<search position="before"><![CDATA[
+				$this->db->query("INSERT INTO " . DB_PREFIX . "order_product SET order_id = '" . (int)$order_id . "', product_id = '" . (int)$product['product_id'] . "', name = '" . $this->db->escape($product['name']) . "', model = '" . $this->db->escape($product['model']) . "', quantity = '" . (int)$product['quantity'] . "', price = '" . (float)$product['price'] . "', total = '" . (float)$product['total'] . "', tax = '" . (float)$product['tax'] . "', reward = '" . (int)$product['reward'] . "'");
+			]]></search>
+			<add><![CDATA[
+				if ($product['shippable']) {
+					$seller_id = $this->MsLoader->MsProduct->getSellerId($product['product_id']);
+					$shipping_type = $this->MsLoader->MsShipping->getSellerShippingType($seller_id);
+					
+					$order_shipping_entry = $this->MsLoader->MsShipping->getOrderShippingType($order_id, $seller_id);
+					if ($order_shipping_entry == MsShipping::SHIPPING_TYPE_NOT_DEFINED) {
+						$this->MsLoader->MsShipping->createOrderShipping(array(
+							'shipping_type' => (int)$shipping_type,
+							'order_id' => (int)$order_id,
+							'seller_id' => (int)$seller_id
+						));
+					}
+					
+					$this->MsLoader->MsShipping->createOrderProductShippable(array(
+						'shippable' => (int)$product['shippable'],
+						'order_id' => (int)$order_id,
+						'product_id' => (int)$product['product_id']
+					));
+					
+					// Get default language
+					$query = $this->db->query("SELECT `value` FROM " . DB_PREFIX . "setting WHERE `key` = 'config_language' AND store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY store_id ASC");
+					$default_language = $this->MsLoader->MsHelper->getLanguageId($query->row['value']);
+					
+					// Fixed shipping
+					if ($shipping_type == MsShipping::SHIPPING_TYPE_FIXED) {
+						$shipping_method_descriptions = $this->MsLoader->MsShippingMethod->getShippingMethodDescriptions((int)$data['shipping_methods'][$product['product_id']]['shipping_method_id']);
+						$shipping_method_name = $shipping_method_descriptions[$default_language]['name'];
+						
+						$this->db->query("
+							INSERT INTO `" . DB_PREFIX . "ms_order_product_shipping` SET
+								`shipping_method_name` = '" . $shipping_method_name . "',
+								`shipping_cost` = '" . $this->currency->convert((float)$data['shipping_methods'][$product['product_id']]['cost_unformatted'], $this->currency->getCode(), $this->config->get('config_currency')) . "',
+								`product_id` = '" . (int)$product['product_id'] . "',
+								`order_id` = '" . (int)$order_id . "',
+								`seller_id` = '" . (int)$seller_id . "'");
+					// Combined shipping
+					} else if ($shipping_type == MsShipping::SHIPPING_TYPE_COMBINABLE) {
+						$shipping_method_descriptions = $this->MsLoader->MsShippingMethod->getShippingMethodDescriptions((int)$data['seller_shipping_methods'][$seller_id]['shipping_method_id']);
+						$shipping_method_name = $shipping_method_descriptions[$default_language]['name'];
+						
+						$this->db->query("
+							INSERT INTO `" . DB_PREFIX . "ms_order_seller_shipping` SET
+								`shipping_method_name` = '" . $shipping_method_name . "',
+								`shipping_cost` = '" . $this->currency->convert((float)$data['seller_shipping_methods'][$seller_id]['cost_unformatted'], $this->currency->getCode(), $this->config->get('config_currency')) . "',
+								`order_id` = '" . (int)$order_id . "',
+								`seller_id` = '" . (int)$seller_id . "'");
+					}
+				}
+			]]></add>
+		</operation>
+		
+		<!-- * Add the shipping costs for each product of the order and add balance records (in two places) for credit (payment) * -->
+		<operation>
+			<search position="after" offset="3"><![CDATA[
+				if ($payment) {
+			]]></search>
+			<add><![CDATA[
+				if ($this->MsLoader->MsShipping->getOrderProductShippable($order_id, $order_product['product_id'])) {
+					$this->load->language('multiseller/multiseller_physical');
+					$seller_id = $this->MsLoader->MsProduct->getSellerId($order_product['product_id']);
+					$shipping_type = $this->MsLoader->MsShipping->getOrderShippingType($order_id, $seller_id);
+					
+					// Fixed shipping
+					if ($shipping_type == MsShipping::SHIPPING_TYPE_FIXED) {
+						$balance_shipping_entry = $this->MsLoader->MsBalance->getBalanceEntry(
+							array(
+								'seller_id' => $seller_id,
+								'product_id' => $order_product['product_id'],
+								'order_id' => $order_id,
+								'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING
+							)
+						);
+					
+						if (!$balance_shipping_entry) {
+							$orderProductShipping = $this->MsLoader->MsShipping->getOrderProductShipping($order_id, $order_product['product_id']);
+							
+							$this->MsLoader->MsBalance->addBalanceEntry(
+								$seller_id,
+								array(
+									'order_id' => $order_product['order_id'],
+									'product_id' => $order_product['product_id'],
+									'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING,
+									'amount' => $this->currency->convert($orderProductShipping['shipping_cost'], $this->currency->getCode(), $this->config->get('config_currency')),
+									'description' => sprintf($this->language->get('ms_transaction_shipping'), ($order_product['quantity'] > 1 ? $order_product['quantity'] . ' x ' : '')  . $order_product['name'])
+								)
+							);
+						}
+					// Combined shipping
+					} else if ($shipping_type == MsShipping::SHIPPING_TYPE_COMBINABLE) {
+						$balance_shipping_entry = $this->MsLoader->MsBalance->getBalanceEntry(
+							array(
+								'seller_id' => $seller_id,
+								'order_id' => $order_id,
+								'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING
+							)
+						);
+					
+						if (!$balance_shipping_entry) {
+							$orderSellerShipping = $this->MsLoader->MsShipping->getOrderSellerShipping($order_id, $seller_id);
+							$seller_name = $this->MsLoader->MsSeller->getSellerName($seller_id);
+							
+							$this->MsLoader->MsBalance->addBalanceEntry(
+								$seller_id,
+								array(
+									'order_id' => $order_product['order_id'],
+									'product_id' => $order_product['product_id'],
+									'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING,
+									'amount' => $this->currency->convert($orderSellerShipping['shipping_cost'], $this->currency->getCode(), $this->config->get('config_currency')),
+									'description' => sprintf($this->language->get('ms_transaction_shipping_order'), $order_product['order_id'], $seller_name)
+								)
+							);
+						}
+					}
+				}
+			]]></add>
+		</operation>
+		
+		<!-- * Add balance records (in two places) for debit (refund) * -->
+		<operation>
+			<search position="after" offset="1"><![CDATA[
+				} else if (in_array($order_status_id, $this->config->get('msconf_debit_order_statuses'))) {
+			]]></search>
+			<add><![CDATA[
+				if ($this->MsLoader->MsShipping->getOrderProductShippable($order_id, $order_product['product_id'])) {
+					$seller_id = $this->MsLoader->MsProduct->getSellerId($order_product['product_id']);
+					$shipping_type = $this->MsLoader->MsShipping->getOrderShippingType($order_id, $seller_id);
+					
+					// Fixed shipping
+					if ($shipping_type == MsShipping::SHIPPING_TYPE_FIXED) {
+						$refund_shipping_entry = $this->MsLoader->MsBalance->getBalanceEntry(
+							array(
+								'seller_id' => $seller_id,
+								'product_id' => $order_product['product_id'],
+								'order_id' => $order_id,
+								'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING_REFUND
+							)
+						);
+					
+						if (!$refund_shipping_entry) {
+							$balance_shipping_entry = $this->MsLoader->MsBalance->getBalanceEntry(
+								array(
+									'seller_id' => $seller_id,
+									'product_id' => $order_product['product_id'],
+									'order_id' => $order_id,
+									'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING
+								)
+							);
+					
+							if ($balance_shipping_entry) {
+								$this->MsLoader->MsBalance->addBalanceEntry(
+									$balance_shipping_entry['seller_id'],
+									array(
+										'order_id' => $balance_shipping_entry['order_id'],
+										'product_id' => $balance_shipping_entry['product_id'],
+										'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING_REFUND,
+										'amount' => -1 * $balance_shipping_entry['amount'],
+										'description' => sprintf($this->language->get('ms_transaction_shipping_refund'), ($order_product['quantity'] > 1 ? $order_product['quantity'] . ' x ' : '')  . $order_product['name'])
+									)
+								);
+							}
+						}
+					// Combined shipping
+					} else if ($shipping_type == MsShipping::SHIPPING_TYPE_COMBINABLE) {
+						$refund_shipping_entry = $this->MsLoader->MsBalance->getBalanceEntry(
+							array(
+								'seller_id' => $seller_id,
+								'order_id' => $order_id,
+								'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING_REFUND
+							)
+						);
+						
+						if (!$refund_shipping_entry) {
+							$balance_shipping_entry = $this->MsLoader->MsBalance->getBalanceEntry(
+								array(
+									'seller_id' => $seller_id,
+									'order_id' => $order_id,
+									'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING
+								)
+							);
+					
+							if ($balance_shipping_entry) {
+								$seller_name = $this->MsLoader->MsSeller->getSellerName($seller_id);
+								$this->MsLoader->MsBalance->addBalanceEntry(
+									$balance_shipping_entry['seller_id'],
+									array(
+										'order_id' => $balance_shipping_entry['order_id'],
+										'product_id' => $balance_shipping_entry['product_id'],
+										'balance_type' => MsBalance::MS_BALANCE_TYPE_SHIPPING_REFUND,
+										'amount' => -1 * $balance_shipping_entry['amount'],
+										'description' => sprintf($this->language->get('ms_transaction_shipping_refund_order'), $balance_shipping_entry['order_id'], $seller_name)
+									)
+								);
+							}
+						}
+					}
+				}
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- ***************************************************************************************************************************************** -->
+	<!-- * Change the checkout sale data model in the backend to add info and balance records for shipping in case of manual order status change * -->
+	<!-- ***************************************************************************************************************************************** -->
+	
+	<!-- * Unset shipping methods after checkout succesfully finished * -->
+	<file name="catalog/controller/checkout/success.php">
+		<operation>
+			<search position="after"><![CDATA[
+				unset($this->session->data['shipping_methods']);
+			]]></search>
+			<add><![CDATA[
+				unset($this->session->data['seller_shipping_methods']);
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- * Add new, light currency format function * -->
+	<file name="system/library/currency.php">
+		<operation>
+			<search position="before"><![CDATA[
+				public function has($currency) {
+			]]></search>
+			<add><![CDATA[
+				public function currencyFormatShort($number, $currency = '') {
+					if ($currency && $this->has($currency)) {
+						$decimal_place = $this->currencies[$currency]['decimal_place'];
+					} else {
+						$currency = $this->code;
+					}
+					$string = '';
+					$decimal_point = $this->language->get('decimal_point');
+					$thousand_point = '';
+					$string .= number_format(round($number, (int)$decimal_place), (int)$decimal_place, $decimal_point, $thousand_point);
+					return $string;
+				}
+			]]></add>
+		</operation>
+	</file>
+</modification>
